@@ -15,13 +15,14 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 7.5
   defenseSpeed: 2.5
-  rotateSpeed: 25
-  jumpPower: 5
+  variableSpeed: 10
+  rotateSpeed: 7.5
+  airSpeed: 3
   jumpTop: 1.5
   gravityValue: 10
   maxFallSpeed: 5
   judgeAttackTime: 0.1
-  approachSpeed: 20
+  approachSpeed: 25
   maxMoveDistance: 5
   avoidDistance: 2.5
   avoidTime: 0.25

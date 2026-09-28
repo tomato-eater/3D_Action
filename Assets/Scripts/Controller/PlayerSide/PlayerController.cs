@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : Controller
 {
+    public int attack = 0;
+
     [Header("Parameter")]
     [SerializeField] PlayableData charData;
     [SerializeField] Transform attackPoint;

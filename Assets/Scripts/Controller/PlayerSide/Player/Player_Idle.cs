@@ -28,12 +28,13 @@ public class Player_Idle : IStateBase
         {
             return;
         }
-        //—‰º’†
+        //—‰º‰º
         if (!controller.IsGround())
         {
             controller.ChangeState(controller.StateFall);
             return;
         }
+        //í“¬’†‚È‚ç
         if (controller.IsBattle)
         {
             //‰ñ”ğ“ü—ÍŒŸ’m
@@ -55,6 +56,8 @@ public class Player_Idle : IStateBase
             controller.ChangeState(controller.StateMove);
             return;
         }
+
+        //•‚‚©‚È‚¢‚æ‚¤‚É‚·‚é
         controller.moveVector.y = -0.01f;
 
         controller.MoveAndRotate(Vector3.zero);

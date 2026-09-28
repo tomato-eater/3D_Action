@@ -9,7 +9,12 @@ public class Player_Move : IStateBase
     PlayerController controller;
     public Player_Move(PlayerController player) => controller = player;
 
-    float currentSpeed;
+    /// <summary>
+    /// 現在の移動速度
+    /// </summary>
+    float currentSpeed = 0.1f;
+
+    Vector2 finalInput = Vector2.zero;
 
     public void Start()
     {
@@ -18,7 +23,7 @@ public class Player_Move : IStateBase
 
     public void Update()
     {
-        //ジャンプした
+        //ジャンプ入力検知
         if (controller.CheckJump())
         {
             return;
@@ -34,6 +39,7 @@ public class Player_Move : IStateBase
             controller.ChangeState(controller.StateFall);
             return;
         }
+        //戦闘中なら
         if (controller.IsBattle)
         {
             //回避入力検知
@@ -48,19 +54,30 @@ public class Player_Move : IStateBase
                 return;
             }
         }
-        
 
         //移動入力
         var moveValue = SInputSystem.instance.MoveValue;
-        //移動ベクトル
+        //カメラの前方ベクトル
         var forward = controller.CameraForward();
+
+        //入力中なら
+        if (moveValue.sqrMagnitude > 0.0f)
+        {
+            //移動ベクトルを更新
+            finalInput = moveValue;
+        }
+
+        controller.moveVector = (forward * finalInput.y + controller.cameraTrans.right * finalInput.x);
         //最大速度指定　バトル中 || 走り中 ? 走り速度 : 歩き速度
         var maxSpeed = controller.IsBattle || SInputSystem.instance.AvoidButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
         //入力状況に合わせて最高速度を変える
         maxSpeed = Mathf.Lerp(0, maxSpeed, moveValue.magnitude);
-        Debug.Log(maxSpeed);
-        controller.moveVector = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * maxSpeed;
-        //移動量計算
+        //徐々に速度を変える
+        currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, controller.CharData.VariableSpeed * controller.ElapsedTime());
+
+        //移動ベクトルに速度を掛ける
+        controller.moveVector *= currentSpeed;
+        //浮かないようにする
         controller.moveVector.y = -0.01f;
         //移動と回転
         controller.MoveAndRotate(controller.moveVector);
@@ -79,6 +96,6 @@ public class Player_Move : IStateBase
 
     public void End()
     {
-
+        finalInput = Vector2.zero;
     }
 }

@@ -10,17 +10,16 @@ public class PlayableData : ScriptableObject
     [SerializeField, Tooltip("歩く速度")] float walkSpeed;
     [SerializeField, Tooltip("走る速度")] float runSpeed;
     [SerializeField, Tooltip("防御速度")] float defenseSpeed;
+    [SerializeField, Tooltip("変速度")] float variableSpeed;
 
     [Header("Rotate")]
     [SerializeField, Tooltip("回転速度")] float rotateSpeed;
 
-    [Header("Jump")]
-    [SerializeField, Tooltip("跳躍力")] float jumpPower;
-    [SerializeField, Tooltip("上昇値")] float jumpTop;
-
-    [Header("Fall")]
+    [Header("Jump / Fall")]
+    [SerializeField, Tooltip("空中移動速度")] float airSpeed;
+    [SerializeField, Tooltip("跳躍力")] float jumpTop;
     [SerializeField, Tooltip("重さ")] float gravityValue;
-    [SerializeField, Tooltip("最高速度")] float maxFallSpeed;
+    [SerializeField, Tooltip("最高降下速度")] float maxFallSpeed;
 
     [Header("Attack")]
     [SerializeField, Tooltip("長押し攻撃の判断時間"), Range(0.01f, 0.1f)] float judgeAttackTime;
@@ -28,7 +27,6 @@ public class PlayableData : ScriptableObject
     [Header("Approach")]
     [SerializeField, Tooltip("攻撃時の接近速度")] float approachSpeed;
     [SerializeField, Tooltip("攻撃時の接近出来る最大距離")] float maxMoveDistance;
-    //[SerializeField, Tooltip("攻撃移行距離")] float judgeAttackDistance;
 
     [Header("Avoid")]
     [SerializeField, Tooltip("回避距離")] float avoidDistance;
@@ -51,13 +49,16 @@ public class PlayableData : ScriptableObject
     /// <summary> 防御時の移動速度 </summary>
     public float DefenseSpeed => defenseSpeed;
 
+    /// <summary> 変速度 </summary>
+    public float VariableSpeed => variableSpeed;
+
     /// <summary> 回転速度 </summary>
     public float RotateSpeed => rotateSpeed;
 
-    /// <summary> 跳躍力 </summary>
-    public float JumpPower => jumpPower;
+    /// <summary> 空中移動速度 </summary>
+    public float AirSpeed => airSpeed;
 
-    /// <summary> 上昇値 </summary>
+    /// <summary> 跳躍力 </summary>
     public float JumpTop => jumpTop;
 
     /// <summary> 重さ </summary>

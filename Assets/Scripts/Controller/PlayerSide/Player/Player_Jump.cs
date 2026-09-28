@@ -32,7 +32,7 @@ public class Player_Jump : IStateBase
         if(moveValue != Vector2.zero)
         {
             var forward = controller.CameraForward();
-            forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.JumpPower;
+            forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.AirSpeed;
             controller.moveVector.x = forward.x;
             controller.moveVector.z = forward.z;
         }

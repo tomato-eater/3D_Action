@@ -27,7 +27,7 @@ public class Player_Fall : IStateBase
         if (moveValue != Vector2.zero)
         {
             var forward = controller.CameraForward();
-            forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.JumpPower;
+            forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.AirSpeed;
             controller.moveVector.x = forward.x;
             controller.moveVector.z = forward.z;
         }
@@ -42,7 +42,7 @@ public class Player_Fall : IStateBase
         controller.MoveAndRotate(controller.moveVector);
 
         var moveSpeed = new Vector3(controller.Controller.velocity.x, 0, controller.Controller.velocity.z).magnitude;
-        controller.Animator.SetFloat("MoveSpeed", moveSpeed);
+        controller.Animator.SetFloat("MoveVelocity", moveSpeed);
 
         //’…’n”»’è
         if (controller.IsGround())

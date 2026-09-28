@@ -18,6 +18,18 @@ public class Player_Attack : IStateBase
 
     public void Update()
     {
+        ////指定したアニメーションが再生されているかの確認
+        //if (!controller.animator.GetCurrentAnimatorStateInfo(0).IsName(アニメーションの名前))
+        //{
+        //    return;
+        //}
+        ////指定したアニメーションが指定した割合まで再生されたか
+        //if(controller.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        //{
+        //    controller.ChangeState()
+        //}
+
+
         time += controller.ElapsedTime();
         if (time > 1.2f)
         {
