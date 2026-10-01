@@ -8,12 +8,12 @@ public class Player_Defense : IStateBase
     PlayableBehaviorController controller;
     public Player_Defense(PlayableBehaviorController player) => controller = player;
 
-    public void Start()
+    public override void Start()
     {
         Debug.Log("ぼうぎょ");
     }
 
-    public void Update()
+    public override void Update()
     {
         //落下中
         if (!controller.IsGround())
@@ -43,10 +43,5 @@ public class Player_Defense : IStateBase
 
         //移動と回転(ロックオン中ならロックオン対象の方向を向く)
         controller.MoveAndRotate(controller.target ? controller.target.transform.position - controller.MyTransform.position : Vector3.zero);
-    }
-
-    public void End()
-    {
-
     }
 }

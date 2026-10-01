@@ -28,7 +28,7 @@ public class Player_Avoid : IStateBase
     /// </summary>
     public float judgeJustAvoid { get; private set; } = 1;
 
-    public void Start()
+    public override void Start()
     {
         timer = 0;
         judgeJustAvoid = 0.01f;
@@ -54,7 +54,7 @@ public class Player_Avoid : IStateBase
     }
 
 
-    public void Update()
+    public override void Update()
     {
         timer += controller.ElapsedTime();
         
@@ -88,7 +88,7 @@ public class Player_Avoid : IStateBase
     }
 
 
-    public void End()
+    public override void End()
     {
         judgeJustAvoid = 1;
     }

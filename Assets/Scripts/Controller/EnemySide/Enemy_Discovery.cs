@@ -14,7 +14,7 @@ public class Enemy_Discovery : IStateBase
     /// </summary>
     float timer = 0;
 
-    public void Start()
+    public override void Start()
     {
         Debug.Log("ハッケン");
 
@@ -24,7 +24,7 @@ public class Enemy_Discovery : IStateBase
         timer = 0;
     }
 
-    public void Update()
+    public override void Update()
     {
         ////指定したアニメーションが再生されているかの確認
         //if (!controller.animator.GetCurrentAnimatorStateInfo(0).IsName(アニメーションの名前))
@@ -45,7 +45,7 @@ public class Enemy_Discovery : IStateBase
         }
     }
 
-    public void End()
+    public override void End()
     {
         controller.Agent.isStopped = false;
 

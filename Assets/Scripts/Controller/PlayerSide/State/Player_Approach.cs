@@ -10,13 +10,13 @@ public class Player_Approach : IStateBase
 
     Vector3 startPos;
 
-    public void Start()
+    public override void Start()
     {
         Debug.Log("Ú“G");
         startPos = controller.MyTransform.position;
     }
 
-    public void Update()
+    public override void Update()
     {
         //Ú“G’†‚É“|‚³‚ê‚½“™@‰“‹——£‚Å‚à‰Â‚ÈUŒ‚
         if (!controller.target || controller.JudgeAttackDistance == 0)
@@ -54,10 +54,5 @@ public class Player_Approach : IStateBase
         controller.moveVector = (enemyPos - myPos).normalized * controller.CharData.ApproachSpeed;
 
         controller.MoveAndRotate(controller.moveVector);
-    }
-
-    public void End()
-    {
-
     }
 }

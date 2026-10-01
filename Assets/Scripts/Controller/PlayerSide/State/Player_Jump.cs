@@ -8,7 +8,7 @@ public class Player_Jump : IStateBase
     PlayableBehaviorController controller;
     public Player_Jump(PlayableBehaviorController player) => controller = player;
 
-    public void Start()
+    public override void Start()
     {
         controller.Animator.SetTrigger("Jump");
 
@@ -17,7 +17,7 @@ public class Player_Jump : IStateBase
         controller.moveVector.y = Mathf.Sqrt(2.0f * controller.CharData.JumpTop * g);
     }
 
-    public void Update()
+    public override void Update()
     {
         //UŒ‚“ü—ÍŒŸ’m
 
@@ -43,10 +43,5 @@ public class Player_Jump : IStateBase
             controller.ChangeState(controller.StateFall);
             return;
         }
-    }
-
-    public void End()
-    {
-        controller.moveVector.y = 0;
     }
 }

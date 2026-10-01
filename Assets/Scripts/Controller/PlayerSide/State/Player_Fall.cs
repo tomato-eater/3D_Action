@@ -9,16 +9,13 @@ public class Player_Fall : IStateBase
     PlayableBehaviorController controller;
     public Player_Fall(PlayableBehaviorController player) => controller = player;
 
-    public void Start()
+    public override void Start()
     {
         controller.Animator.SetTrigger("Fall");
     }
 
-    public void Update()
+    public override void Update()
     {
-        //UŒ‚“ü—ÍŒŸ’m
-
-
         //ˆÚ“®
         var moveValue = SInputSystem.instance.MoveValue;
         if (moveValue != Vector2.zero)
@@ -48,7 +45,7 @@ public class Player_Fall : IStateBase
         }
     }
 
-    public void End()
+    public override void End()
     {
         controller.Animator.SetTrigger("Land");
 

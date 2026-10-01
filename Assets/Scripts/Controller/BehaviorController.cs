@@ -3,22 +3,22 @@ using UnityEngine;
 /// <summary>
 /// ステートテンプレート
 /// </summary>
-public interface IStateBase
+public abstract class IStateBase
 {
     /// <summary>
     /// 切り替え直後
     /// </summary>
-    void Start();
+    public virtual void Start() { }
 
     /// <summary>
     /// 更新
     /// </summary>
-    void Update();
+    public abstract void Update();
 
     /// <summary>
     /// 切り替え直前
     /// </summary>
-    void End();
+    public virtual void End() { }
 }
 
 /// <summary>
@@ -30,11 +30,6 @@ public class BehaviorController : MonoBehaviour
     /// 現在のステート
     /// </summary>
     protected IStateBase state;
-
-    protected virtual void Update()
-    {
-        state?.Update();
-    }
 
     /// <summary>
     /// ステートの切り替え

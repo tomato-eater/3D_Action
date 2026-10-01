@@ -10,13 +10,13 @@ public class Player_TapAttack : IStateBase
 
     float time;
 
-    public void Start()
+    public override void Start()
     {
         Debug.Log("こうげき");
         time = 0;
     }
 
-    public void Update()
+    public override void Update()
     {
         ////指定したアニメーションが再生されているかの確認
         //if (!controller.animator.GetCurrentAnimatorStateInfo(0).IsName(アニメーションの名前))
@@ -37,10 +37,6 @@ public class Player_TapAttack : IStateBase
         }
     }
 
-    public void End()
-    {
-
-    }
 }
 
 /*

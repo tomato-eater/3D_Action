@@ -9,24 +9,19 @@ public class Player_Idle : IStateBase
     PlayableBehaviorController controller;
     public Player_Idle(PlayableBehaviorController player) => controller = player;
 
-    public void Start()
+    public override void Start()
     {
         controller.Animator.SetFloat("MoveVelocity", 0);
-        controller.Animator.SetBool("Idle", true);
         controller.moveVector = Vector3.zero;
     }
 
-    public void Update()
+    public override void Update()
     {
         //ジャンプ入力検知
-        if(controller.CheckJump())
+        if (controller.CheckJump())
         {
             return;
         }
-        //攻撃入力検知
-        
-
-
         //落下した
         if (!controller.IsGround())
         {
@@ -48,7 +43,7 @@ public class Player_Idle : IStateBase
                 return;
             }
         }
-        
+
         //移動入力検知
         if (SInputSystem.instance.MoveValue != Vector2.zero)
         {
@@ -60,11 +55,5 @@ public class Player_Idle : IStateBase
         controller.moveVector.y = -0.01f;
 
         controller.MoveAndRotate(Vector3.zero);
-    }
-
-    public void End()
-    {
-        controller.Animator.SetBool("Idle", false);
-
     }
 }

@@ -46,8 +46,6 @@ public class PlayableBehaviorController : BehaviorController
     public Animator Animator => animator;
     public Transform AttackPoint => attackPoint;
 
-    bool activeInputAttack = false;
-
 
     bool justSlowTrigger = false;
     float slowTimer = 0;
@@ -71,9 +69,9 @@ public class PlayableBehaviorController : BehaviorController
     }
 
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
+        state?.Update();
 
         if (justSlowTrigger)
         {

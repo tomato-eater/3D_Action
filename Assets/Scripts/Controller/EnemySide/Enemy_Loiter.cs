@@ -11,7 +11,7 @@ public class Enemy_Loiter : IStateBase
 
     bool move = false;
 
-    public void Start()
+    public override void Start()
     {
         //ˆÚ“®‘¬“x•ÏX
         controller.Agent.speed = controller.WalkSpeed;
@@ -23,7 +23,7 @@ public class Enemy_Loiter : IStateBase
         controller.Agent.SetDestination(targetPos);
     }
 
-    public void Update()
+    public override void Update()
     {
         if (controller.Scouting())
         {
@@ -40,7 +40,7 @@ public class Enemy_Loiter : IStateBase
             controller.ChangeState(controller.StateIdle);
     }
 
-    public void End()
+    public override void End()
     {
         move = false;
     }

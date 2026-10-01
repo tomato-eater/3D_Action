@@ -12,14 +12,14 @@ public class Enemy_Idle : IStateBase
     float time = 0;
     float timer = 0;
 
-    public void Start()
+    public override void Start()
     {
         Debug.Log("ƒAƒCƒhƒ‹");
         timer = 0;
         time = Random.Range(controller.IdleTime.x, controller.IdleTime.y);
     }
 
-    public void Update()
+    public override void Update()
     {
         if (controller.Scouting())
         {
@@ -31,10 +31,5 @@ public class Enemy_Idle : IStateBase
         {
             controller.ChangeState(controller.StateLoiter);
         }
-    }
-
-    public void End()
-    {
-
     }
 }

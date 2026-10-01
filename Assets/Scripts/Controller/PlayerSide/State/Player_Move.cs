@@ -16,21 +16,14 @@ public class Player_Move : IStateBase
 
     Vector2 finalInput = Vector2.zero;
 
-    public void Start()
-    {
 
-    }
-
-    public void Update()
+    public override void Update()
     {
         //ジャンプ入力検知
         if (controller.CheckJump())
         {
             return;
         }
-        //攻撃入力検知
-
-
         //落下した
         if (!controller.IsGround())
         {
@@ -92,7 +85,7 @@ public class Player_Move : IStateBase
         }
     }
 
-    public void End()
+    public override void End()
     {
         finalInput = Vector2.zero;
     }

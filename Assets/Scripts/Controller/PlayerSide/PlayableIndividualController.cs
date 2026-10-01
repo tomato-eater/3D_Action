@@ -3,51 +3,23 @@ using UnityEngine;
 /// <summary>
 /// Playableキャラの攻撃やスキルの基盤
 /// </summary>
-public abstract class PlayableIndividualController : MonoBehaviour
+public abstract class PlayableIndividualController
 {
     /// <summary>
-    /// 現在のコントローラー
+    /// 攻撃時の接近ステート
     /// </summary>
-    protected PlayableBehaviorController controller;
+    protected Player_Approach StateApproach;
+    /// <summary>
+    /// 単攻撃ステート
+    /// </summary>
+    protected Player_TapAttack StateTapAttack;
+
 
     /// <summary>
-    /// コントローラーの登録
+    /// コントローラー、各ステートの登録
     /// </summary>
     /// <param name="player"></param>
-    public virtual void Set(PlayableBehaviorController player) => controller = player;
+    public abstract void Set(PlayableBehaviorController player);
 
-    /// <summary>
-    /// 接近する ? true : false
-    /// </summary>
-    public abstract bool Approach {  get; }
 
-    /// <summary>
-    /// 長押し、離して発動 ? true : false
-    /// </summary>
-    public abstract bool Hold {  get; }
-
-    /// <summary>
-    /// 接近時
-    /// </summary>
-    public abstract void ApproachMove();
-
-    /// <summary>
-    /// 短押し攻撃
-    /// </summary>
-    public abstract void TapAttack();
-
-    /// <summary>
-    /// 長押し攻撃
-    /// </summary>
-    public abstract void HoldAttack();
-
-    /// <summary>
-    /// 長押しから離した
-    /// </summary>
-    public abstract void HoldRelease();
-
-    /// <summary>
-    /// スキル
-    /// </summary>
-    public abstract void Skill();
 }
