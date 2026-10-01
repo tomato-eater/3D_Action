@@ -6,8 +6,8 @@ using UnityEngine.InputSystem.XR;
 /// </summary>
 public class Player_Fall : IStateBase
 {
-    PlayerController controller;
-    public Player_Fall(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Fall(PlayableBehaviorController player) => controller = player;
 
     public void Start()
     {
@@ -17,10 +17,7 @@ public class Player_Fall : IStateBase
     public void Update()
     {
         //UŒ‚“ü—ÍŒŸ’m
-        if (controller.Attack())
-        {
-            return;
-        }
+
 
         //ˆÚ“®
         var moveValue = SInputSystem.instance.MoveValue;

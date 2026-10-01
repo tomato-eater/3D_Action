@@ -23,7 +23,7 @@ MonoBehaviour:
   maxFallSpeed: 5
   judgeAttackTime: 0.1
   approachSpeed: 25
-  maxMoveDistance: 5
+  maxMoveDistance: 10
   avoidDistance: 2.5
   avoidTime: 0.25
   judgeAvoidPercent: 0.35

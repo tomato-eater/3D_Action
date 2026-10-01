@@ -12,7 +12,7 @@ public class TargetController : MonoBehaviour
     [SerializeField] LayerMask mask;
 
     [Header("Refer")]
-    [SerializeField] PlayerController player;
+    [SerializeField] PlayableBehaviorController player;
 
     //“ü—Íó‹µ
     bool lockTrigger;
@@ -23,6 +23,10 @@ public class TargetController : MonoBehaviour
     int individual;
     int part;
 
+    private void Start()
+    {
+        TryGetComponent<PlayableBehaviorController>(out player);
+    }
 
     void Update()
     {
@@ -42,7 +46,7 @@ public class TargetController : MonoBehaviour
     /// </summary>
     void LockEnemy()
     {
-        if (!SInputSystem.instance.TargetButton)
+        if (!SInputSystem.instance.TargetTrigger)
         {
             lockTrigger = true;
         }
@@ -127,7 +131,7 @@ public class TargetController : MonoBehaviour
     void ChangeEnemy()
     {
         //“G‚ğ•Ï‚¦‚é
-        if (!SInputSystem.instance.ChangeButtonT)
+        if (!SInputSystem.instance.ChangeTriggerT)
         {
             targetTrigger = true;
         }
@@ -138,7 +142,7 @@ public class TargetController : MonoBehaviour
         }
 
         //•”ˆÊ‚ğ•Ï‚¦‚é
-        if (!SInputSystem.instance.ChangeButtonP)
+        if (!SInputSystem.instance.ChangeTriggerP)
         {
             pointTrigger = true;
         }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 /// <summary>
 /// 入力システム管理
@@ -9,45 +10,95 @@ public class SInputSystem : MonoBehaviour
 {
     public static SInputSystem instance { get; private set; }
 
-    [SerializeField] PlayerInput playerInput;
-    InputActionMap playerMap;
+    PlayerInput playerInput;
+
+    InputAction moveAction;
+    InputAction lookAction;
+
+    InputAction jumpAction;
+
+    InputAction targetAction;
+    InputAction targetTAction;
+    InputAction targetPAction;
+
+    InputAction defenseAction;
+    InputAction avoidAction;
 
     /// <summary>
     /// 移動入力
     /// </summary>
-    public Vector2 MoveValue { get; private set; }
+    public Vector2 MoveValue => moveAction.ReadValue<Vector2>();
     /// <summary>
     /// カメラ入力
     /// </summary>
-    public Vector2 CameraMove {  get; private set; }
+    public Vector2 CameraMove => lookAction.ReadValue<Vector2>();
+
     /// <summary>
-    /// 攻撃入力
+    /// ジャンプ入力した
     /// </summary>
-    public bool AttackButton {  get; private set; }
+    public bool JumpTrigger => jumpAction.triggered;
     /// <summary>
-    /// ジャンプ入力
+    /// ジャンプ入力中
     /// </summary>
-    public bool JumpButton {  get; private set; }
+    public bool JumpPress => jumpAction.IsPressed();
+
     /// <summary>
-    /// ロック入力
+    /// ロックオン・オフ変更
     /// </summary>
-    public bool TargetButton {  get; private set; }
+    public bool TargetTrigger => targetAction.triggered;
     /// <summary>
     /// ロックオン対象変更
     /// </summary>
-    public bool ChangeButtonT {  get; private set; }
+    public bool ChangeTriggerT => targetTAction.triggered;
     /// <summary>
     /// ロックオン場所変更
     /// </summary>
-    public bool ChangeButtonP {  get; private set; }
+    public bool ChangeTriggerP => targetPAction.triggered;
+
     /// <summary>
-    /// 防御入力
+    /// 防御入力中
     /// </summary>
-    public bool DefenseButton {  get; private set; }
+    public bool DefenseButton => defenseAction.IsPressed();
     /// <summary>
     /// 回避入力
     /// </summary>
-    public bool AvoidButton {  get; private set; }
+    public bool AvoidTrigger => avoidAction.triggered;
+    /// <summary>
+    /// 走り入力中
+    /// </summary>
+    public bool RunButton => avoidAction.IsPressed();
+
+    /// <summary>
+    /// 攻撃入力の受付状態
+    /// </summary>
+    bool attackActive = false;
+    /// <summary>
+    /// 攻撃タップ入力
+    /// </summary>
+    bool tapAttackTrigger = false;
+    /// <summary>
+    /// 攻撃タップ入力受付
+    /// </summary>
+    public bool TapAttackTrigger
+    {
+        get
+        {
+            if (tapAttackTrigger)
+            {
+                tapAttackTrigger = false;
+                return true;
+            }
+            return false;
+        }
+    }
+    /// <summary>
+    /// 攻撃ホールド状態
+    /// </summary>
+    public bool HoldAttack { get; private set; } = false;
+    /// <summary>
+    /// 攻撃未入力
+    /// </summary>
+    public bool DerivedAttackTrigger { get; private set; } = true;
 
     private void Awake()
     {
@@ -59,6 +110,19 @@ public class SInputSystem : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        TryGetComponent<PlayerInput>(out playerInput);
+
+        moveAction     = playerInput.actions["Move"];
+        lookAction     = playerInput.actions["Look"];
+        jumpAction     = playerInput.actions["Jump"];
+        targetAction   = playerInput.actions["TargetTrigger"];
+        targetTAction  = playerInput.actions["ChangeTarget"];
+        targetPAction  = playerInput.actions["ChangePoint"];
+        defenseAction  = playerInput.actions["Defense"];
+        avoidAction    = playerInput.actions["Avoid"];
+
+        SwitchMap("Player");
     }
     /// <summary>
     /// ゲーム終了時、実行
@@ -67,38 +131,53 @@ public class SInputSystem : MonoBehaviour
     {
         instance = null;
     }
+    
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// マップの切り替え
+    /// </summary>
+    /// <param name="map">切り替え先</param>
+    void SwitchMap(string map)
     {
-        if (!playerInput)
-        {
-            if (TryGetComponent<PlayerInput>(out playerInput))
-            {
-                InputActionAsset asset = playerInput.actions;
-                playerMap = asset.FindActionMap("Player");
+        playerInput.SwitchCurrentActionMap(map);
 
+        var attackAction = playerInput.actions["Attack"];
+        if (map == "Player")
+        {
+            if (!attackActive)
+            {
+                attackActive = true;
+                attackAction.performed += OnAttackPerform;
+                attackAction.canceled += OnAttackCancel;
+            }
+            else
+            {
+                attackActive = false;
             }
         }
-
-        
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void OnAttackPerform(InputAction.CallbackContext context)
     {
-        MoveValue = playerInput.actions["Move"].ReadValue<Vector2>();
-        CameraMove = playerInput.actions["Look"].ReadValue<Vector2>();
-
-        AttackButton = playerInput.actions["Attack"].IsPressed();
-
-        JumpButton = playerInput.actions["Jump"].IsPressed();
-
-        TargetButton = playerInput.actions["TargetTrigger"].IsPressed();
-        ChangeButtonT = playerInput.actions["ChangeTarget"].IsPressed();
-        ChangeButtonP = playerInput.actions["ChangePoint"].IsPressed();
-        
-        DefenseButton = playerInput.actions["Defense"].IsPressed();
-        AvoidButton = playerInput.actions["Avoid"].IsPressed();
+        if(context.interaction is TapInteraction)
+        {
+            tapAttackTrigger = true;
+        }
+        else
+        {
+            HoldAttack = true;
+            DerivedAttackTrigger = false;
+        }
     }
+
+    void OnAttackCancel(InputAction.CallbackContext context)
+    {
+        if(context.interaction is HoldInteraction)
+        {
+            HoldAttack = false;
+            DerivedAttackTrigger = true;
+        }
+    }
+
 }

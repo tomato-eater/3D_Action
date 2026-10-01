@@ -6,8 +6,8 @@ using UnityEngine.UIElements;
 /// </summary>
 public class Player_Move : IStateBase
 {
-    PlayerController controller;
-    public Player_Move(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Move(PlayableBehaviorController player) => controller = player;
 
     /// <summary>
     /// 現在の移動速度
@@ -29,10 +29,8 @@ public class Player_Move : IStateBase
             return;
         }
         //攻撃入力検知
-        if (controller.Attack())
-        {
-            return;
-        }
+
+
         //落下した
         if (!controller.IsGround())
         {
@@ -40,7 +38,7 @@ public class Player_Move : IStateBase
             return;
         }
         //戦闘中なら
-        if (controller.IsBattle)
+        if (SGameManager.instance.ActivityMode == ActivityMode.Battle)
         {
             //回避入力検知
             if (controller.Avoid())
@@ -69,7 +67,7 @@ public class Player_Move : IStateBase
 
         controller.moveVector = (forward * finalInput.y + controller.cameraTrans.right * finalInput.x);
         //最大速度指定　バトル中 || 走り中 ? 走り速度 : 歩き速度
-        var maxSpeed = controller.IsBattle || SInputSystem.instance.AvoidButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
+        var maxSpeed = SGameManager.instance.ActivityMode == ActivityMode.Battle || SInputSystem.instance.RunButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
         //入力状況に合わせて最高速度を変える
         maxSpeed = Mathf.Lerp(0, maxSpeed, moveValue.magnitude);
         //徐々に速度を変える

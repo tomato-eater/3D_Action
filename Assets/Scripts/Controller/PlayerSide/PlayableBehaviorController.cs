@@ -1,13 +1,13 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 /// <summary>
 /// プレイヤー操作
 /// </summary>
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : Controller
+public class PlayableBehaviorController : BehaviorController
 {
-    public int attack = 0;
-
     [Header("Parameter")]
     [SerializeField] PlayableData charData;
     [SerializeField] Transform attackPoint;
@@ -27,7 +27,7 @@ public class PlayerController : Controller
     public Player_Jump StateJump {  get; private set; }
     public Player_Fall StateFall {  get; private set; }
     public Player_Approach StateApproach {  get; private set; }
-    public Player_Attack StateAttack { get; private set; }
+    public Player_TapAttack StateAttack { get; private set; }
     public Player_Defense StateDefense {  get; private set; }
     public Player_Avoid StateAvoid { get; private set; }
 
@@ -46,14 +46,12 @@ public class PlayerController : Controller
     public Animator Animator => animator;
     public Transform AttackPoint => attackPoint;
 
-    public bool IsBattle { get; private set; } = false;
+    bool activeInputAttack = false;
 
-    float attackJudgeTimer = 0;
-    bool jumpTrigger = true;
-    bool avoidTrigger = true;
 
     bool justSlowTrigger = false;
     float slowTimer = 0;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -65,16 +63,16 @@ public class PlayerController : Controller
         StateJump = new Player_Jump(this);
         StateFall = new Player_Fall(this);
         StateApproach = new Player_Approach(this);
-        StateAttack = new Player_Attack(this);
+        StateAttack = new Player_TapAttack(this);
         StateDefense = new Player_Defense(this);
         StateAvoid = new Player_Avoid(this);
 
         ChangeState(StateIdle);
     }
 
+
     protected override void Update()
     {
-        IsBattle = SGameManager.instance.ActivityMode == ActivityMode.Battle;
         base.Update();
 
         if (justSlowTrigger)
@@ -82,6 +80,9 @@ public class PlayerController : Controller
             NowSlow();
         }
     }
+
+
+
 
     /// <summary>
     /// 経過時間取得
@@ -107,55 +108,12 @@ public class PlayerController : Controller
     /// <returns>ジャンプの判断</returns>
     public bool CheckJump()
     {
-        if (!SInputSystem.instance.JumpButton)
+        if (SInputSystem.instance.JumpTrigger)
         {
-            jumpTrigger = true;
-        }
-        else if (jumpTrigger)
-        {
-            jumpTrigger = false;
             ChangeState(StateJump);
             return true;
         }
         return false;
-    }
-
-    /// <summary>
-    /// 攻撃の判断　いま、空中で範囲攻撃できてしまったりしてる
-    /// </summary>
-    /// <returns>攻撃へ移行したか</returns>
-    public bool Attack()
-    {
-        if (SInputSystem.instance.AttackButton)
-        {
-            attackJudgeTimer += Time.unscaledDeltaTime;
-
-            //長押し攻撃
-            if (attackJudgeTimer >= CharData.JudgeAttackTime)
-            {
-                attackJudgeTimer = 0;
-                //////////////////////////////////////////長押ししたときの攻撃ステートに切り替わるようにする
-                return true;
-            }
-        }
-        else
-        {
-            //通常攻撃
-            if (attackJudgeTimer != 0) 
-            {
-                attackJudgeTimer = 0;
-                ChangeState(StateApproach);
-                return true;
-            }
-        }
-        return false;
-    }
-    /// <summary>
-    /// 攻撃判定のリセット
-    /// </summary>
-    public void AttackReset()
-    {
-        attackJudgeTimer = 0;
     }
 
     /// <summary>
@@ -164,13 +122,8 @@ public class PlayerController : Controller
     /// <returns>回避へ移行したか</returns>
     public bool Avoid()
     {
-        if(!SInputSystem.instance.AvoidButton)
-        {
-            avoidTrigger = true;
-        }
-        else if (avoidTrigger)
-        {
-            avoidTrigger = false;
+        if (SInputSystem.instance.AvoidTrigger) 
+        { 
             ChangeState(StateAvoid);
             return true;
         }

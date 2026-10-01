@@ -5,8 +5,8 @@ using UnityEngine;
 /// </summary>
 public class Player_Avoid : IStateBase
 {
-    PlayerController controller;
-    public Player_Avoid(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Avoid(PlayableBehaviorController player) => controller = player;
 
     /// <summary>
     /// 開始地点
@@ -30,8 +30,6 @@ public class Player_Avoid : IStateBase
 
     public void Start()
     {
-        controller.AttackReset();
-
         timer = 0;
         judgeJustAvoid = 0.01f;
         startPos = controller.MyTransform.position;

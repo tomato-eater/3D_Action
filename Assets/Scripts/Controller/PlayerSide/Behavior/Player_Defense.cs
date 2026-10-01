@@ -5,13 +5,11 @@ using UnityEngine;
 /// </summary>
 public class Player_Defense : IStateBase
 {
-    PlayerController controller;
-    public Player_Defense(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Defense(PlayableBehaviorController player) => controller = player;
 
     public void Start()
     {
-        controller.AttackReset();
-
         Debug.Log("Ç⁄Ç§Ç¨ÇÂ");
     }
 
@@ -29,7 +27,7 @@ public class Player_Defense : IStateBase
             return;
         }
         //ñhå‰âèú
-        if (!SInputSystem.instance.DefenseButton || !controller.IsBattle)
+        if (!SInputSystem.instance.DefenseButton || SGameManager.instance.ActivityMode != ActivityMode.Battle)
         {
             controller.ChangeState(controller.StateIdle);
             return;

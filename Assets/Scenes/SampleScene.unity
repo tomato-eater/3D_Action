@@ -453,7 +453,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c710ad75a1af6c4090268cba76e6675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::S_InputSystem
-  playerInput: {fileID: 318585450}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +622,7 @@ MonoBehaviour:
   targetDirZ: {x: 3.5, y: 10}
   targetLimitX: {x: -25, y: 25}
   targetLimitY: {x: -5, y: 15}
-  player: {fileID: 1700651841}
+  player: {fileID: 1700651844}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1804,7 +1803,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1700651840}
-  - component: {fileID: 1700651841}
+  - component: {fileID: 1700651844}
   - component: {fileID: 1700651843}
   - component: {fileID: 1700651842}
   m_Layer: 0
@@ -1831,30 +1830,6 @@ Transform:
   - {fileID: 2119144444}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1700651841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1700651838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7125e8e340b1eb4d970077248c6402e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  attack: 0
-  charData: {fileID: 11400000, guid: 8d003d0a78d09d941a5dc4697fd3a3f7, type: 2}
-  attackPoint: {fileID: 2119144444}
-  judgeAttackDistance: 0.2
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 8
-  cameraTrans: {fileID: 330585546}
-  target: {fileID: 0}
-  controller: {fileID: 1700651842}
-  animator: {fileID: 576995984}
-  moveVector: {x: 0, y: 0, z: 0}
 --- !u!143 &1700651842
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1897,8 +1872,31 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 128
-  player: {fileID: 1700651841}
+  player: {fileID: 1700651844}
   battleArea: {fileID: 0}
+--- !u!114 &1700651844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700651838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4730b5ff0059d4aaa6e6f059f135a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayableBehaviorController
+  charData: {fileID: 11400000, guid: 8d003d0a78d09d941a5dc4697fd3a3f7, type: 2}
+  attackPoint: {fileID: 2119144444}
+  judgeAttackDistance: 0.2
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  cameraTrans: {fileID: 330585546}
+  target: {fileID: 0}
+  controller: {fileID: 1700651842}
+  animator: {fileID: 576995984}
+  moveVector: {x: 0, y: 0, z: 0}
 --- !u!1 &1917394753
 GameObject:
   m_ObjectHideFlags: 0
@@ -2065,7 +2063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f291b3184ed1210448c082953dbdb5c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleArea
-  player: {fileID: 1700651841}
+  player: {fileID: 1700651844}
   activeRadius: 60
   radius: 15
   enemyControllers:

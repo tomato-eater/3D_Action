@@ -5,7 +5,7 @@ using UnityEngine.AI;
 /// <summary>
 /// 敵のコントローラー
 /// </summary>
-public class EnemyController : Controller
+public class EnemyController : BehaviorController
 {
     [Header("Parameter")]
     [SerializeField] Transform eyeTrans;

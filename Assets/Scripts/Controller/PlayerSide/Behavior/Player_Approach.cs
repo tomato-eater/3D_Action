@@ -5,8 +5,8 @@ using UnityEngine;
 /// </summary>
 public class Player_Approach : IStateBase
 {
-    PlayerController controller;
-    public Player_Approach(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Approach(PlayableBehaviorController player) => controller = player;
 
     Vector3 startPos;
 

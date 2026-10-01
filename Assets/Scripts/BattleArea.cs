@@ -3,7 +3,7 @@ using UnityEngine.InputSystem.XR;
 
 public class BattleArea : MonoBehaviour
 {
-    [SerializeField, Tooltip("Player")] PlayerController player;
+    [SerializeField, Tooltip("Player")] PlayableBehaviorController player;
     [SerializeField, Tooltip("—LŒø‹——£")] float activeRadius = 60.0f;
 
     [SerializeField, Tooltip("í“¬ƒGƒŠƒA”¼Œa")] float radius;

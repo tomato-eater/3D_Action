@@ -3,10 +3,10 @@ using UnityEngine;
 /// <summary>
 /// UŒ‚
 /// </summary>
-public class Player_Attack : IStateBase
+public class Player_TapAttack : IStateBase
 {
-    PlayerController controller;
-    public Player_Attack(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_TapAttack(PlayableBehaviorController player) => controller = player;
 
     float time;
 

@@ -24,7 +24,7 @@ public interface IStateBase
 /// <summary>
 /// コントローラーテンプレート
 /// </summary>
-public class Controller : MonoBehaviour
+public class BehaviorController : MonoBehaviour
 {
     /// <summary>
     /// 現在のステート

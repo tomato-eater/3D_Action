@@ -6,8 +6,8 @@ using UnityEngine.InputSystem.XR;
 /// </summary>
 public class Player_Idle : IStateBase
 {
-    PlayerController controller;
-    public Player_Idle(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Idle(PlayableBehaviorController player) => controller = player;
 
     public void Start()
     {
@@ -24,18 +24,17 @@ public class Player_Idle : IStateBase
             return;
         }
         //UŒ‚“ü—ÍŒŸ’m
-        if (controller.Attack())
-        {
-            return;
-        }
-        //—‰º‰º
+        
+
+
+        //—‰º‚µ‚½
         if (!controller.IsGround())
         {
             controller.ChangeState(controller.StateFall);
             return;
         }
         //í“¬’†‚È‚ç
-        if (controller.IsBattle)
+        if (SGameManager.instance.ActivityMode == ActivityMode.Battle)
         {
             //‰ñ”ğ“ü—ÍŒŸ’m
             if (controller.Avoid())

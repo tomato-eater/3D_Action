@@ -5,13 +5,11 @@ using UnityEngine;
 /// </summary>
 public class Player_Jump : IStateBase
 {
-    PlayerController controller;
-    public Player_Jump(PlayerController player) => controller = player;
+    PlayableBehaviorController controller;
+    public Player_Jump(PlayableBehaviorController player) => controller = player;
 
     public void Start()
     {
-        controller.AttackReset();
-
         controller.Animator.SetTrigger("Jump");
 
         //ジャンプ初速計算
@@ -22,10 +20,7 @@ public class Player_Jump : IStateBase
     public void Update()
     {
         //攻撃入力検知
-        if (controller.Attack())
-        {
-            return;
-        }
+
 
         //移動
         var moveValue = SInputSystem.instance.MoveValue;
