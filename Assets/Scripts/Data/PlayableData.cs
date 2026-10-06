@@ -21,9 +21,6 @@ public class PlayableData : ScriptableObject
     [SerializeField, Tooltip("d‚³")] float gravityValue;
     [SerializeField, Tooltip("Å‚~‰º‘¬“x")] float maxFallSpeed;
 
-    [Header("Attack")]
-    [SerializeField, Tooltip("’·‰Ÿ‚µUŒ‚‚Ì”»’fŠÔ"), Range(0.01f, 0.1f)] float judgeAttackTime;
-
     [Header("Approach")]
     [SerializeField, Tooltip("UŒ‚‚ÌÚ‹ß‘¬“x")] float approachSpeed;
     [SerializeField, Tooltip("UŒ‚‚ÌÚ‹ßo—ˆ‚éÅ‘å‹——£")] float maxMoveDistance;
@@ -66,9 +63,6 @@ public class PlayableData : ScriptableObject
 
     /// <summary> Å‚~‰º‘¬“x </summary>
     public float MaxFallSpeed => -maxFallSpeed;
-
-    /// <summary> ’·‰Ÿ‚µUŒ‚‚Ì”»’fŠÔ </summary>
-    public float JudgeAttackTime => judgeAttackTime;
 
     /// <summary> UŒ‚‚ÌÚ‹ß‘¬“x </summary>
     public float ApproachSpeed => approachSpeed;

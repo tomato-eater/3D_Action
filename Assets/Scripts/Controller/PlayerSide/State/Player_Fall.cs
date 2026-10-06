@@ -4,7 +4,7 @@ using UnityEngine.InputSystem.XR;
 /// <summary>
 /// —‰º
 /// </summary>
-public class Player_Fall : IStateBase
+public class Player_Fall : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Fall(PlayableBehaviorController player) => controller = player;
@@ -16,6 +16,12 @@ public class Player_Fall : IStateBase
 
     public override void Update()
     {
+        //UŒ‚“ü—ÍŒŸ’m
+        if (controller.Attack(out var comboAdd))
+        {
+            return;
+        }
+
         //ˆÚ“®
         var moveValue = SInputSystem.instance.MoveValue;
         if (moveValue != Vector2.zero)

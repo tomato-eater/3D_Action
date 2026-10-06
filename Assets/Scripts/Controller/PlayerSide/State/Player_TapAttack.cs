@@ -3,52 +3,69 @@ using UnityEngine;
 /// <summary>
 /// 攻撃
 /// </summary>
-public class Player_TapAttack : IStateBase
+public class Player_TapAttack : StateBase
 {
     PlayableBehaviorController controller;
     public Player_TapAttack(PlayableBehaviorController player) => controller = player;
+
+    uint combo = 0;
+
+    bool endAni = false;
 
     float time;
 
     public override void Start()
     {
-        Debug.Log("こうげき");
+        if(combo >= controller.Individual.MaxCombo)
+        {
+            combo = 0;
+            controller.ChangeState(controller.StateIdle);
+            return;
+        }
+
+        controller.Animator.SetTrigger("TapAttack");
+        combo++;
+        endAni = false;
         time = 0;
     }
 
     public override void Update()
     {
-        ////指定したアニメーションが再生されているかの確認
-        //if (!controller.animator.GetCurrentAnimatorStateInfo(0).IsName(アニメーションの名前))
-        //{
-        //    return;
-        //}
-        ////指定したアニメーションが指定した割合まで再生されたか
-        //if(controller.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-        //{
-        //    controller.ChangeState()
-        //}
+        if (!endAni)
+            endAni = controller.Individual.EndAnimator;
 
-
-        time += controller.ElapsedTime();
-        if (time > 1.2f)
+        if (endAni)
         {
-            controller.ChangeState(controller.StateIdle);
+            time += controller.ElapsedTime();
+            if (time > 0.1f)
+            {
+                //回避入力検知
+                if (SGameManager.instance.ActivityMode == ActivityMode.Battle && controller.Avoid())
+                {
+                    combo = 0;
+                    controller.Animator.SetTrigger("EndAttack");
+                    return;
+                }
+
+                //攻撃入力検知
+                if (combo < controller.Individual.MaxCombo && controller.Attack(out var comboAdd)) 
+                {
+                    if (!comboAdd)
+                    {
+                        combo = 0;
+                        controller.Animator.SetTrigger("EndAttack");
+                    }
+                    return;
+                }
+            }
+            if (time > 0.15f)
+            {
+                bool tapAttackTrigger = SInputSystem.instance.TapAttackTrigger;
+                combo = 0;
+                controller.Animator.SetTrigger("EndAttack");
+                controller.ChangeState(controller.StateIdle);
+                return;
+            }
         }
     }
-
 }
-
-/*
- 攻撃の判定方法
-
-1　武器のモデルにコライダーを割り当て、アニメーションで ON OFF する
-    攻撃処理とアニメーションとのタイミングにずれがない
-    
-2　キャラクター前方にコライダーを出現させる　
-    範囲攻撃等で活躍
-
-3　武器の根元から先端にレイを飛ばす
-    すり抜けが起きない
-
- */

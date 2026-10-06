@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ñhå‰
 /// </summary>
-public class Player_Defense : IStateBase
+public class Player_Defense : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Defense(PlayableBehaviorController player) => controller = player;

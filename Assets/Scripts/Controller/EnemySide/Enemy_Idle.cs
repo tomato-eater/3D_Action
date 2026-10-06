@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ‘Ò‹@
 /// </summary>
-public class Enemy_Idle : IStateBase
+public class Enemy_Idle : StateBase
 {
 
     EnemyController controller;

@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ƒWƒƒƒ“ƒv
 /// </summary>
-public class Player_Jump : IStateBase
+public class Player_Jump : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Jump(PlayableBehaviorController player) => controller = player;
@@ -20,7 +20,10 @@ public class Player_Jump : IStateBase
     public override void Update()
     {
         //UŒ‚“ü—ÍŒŸ’m
-
+        if (controller.Attack(out var comboAdd))
+        {
+            return;
+        }
 
         //ˆÚ“®
         var moveValue = SInputSystem.instance.MoveValue;

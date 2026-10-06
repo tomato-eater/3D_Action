@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// ”­Œ©‚µ‚½
 /// </summary>
-public class Enemy_Discovery : IStateBase
+public class Enemy_Discovery : StateBase
 {
     EnemyController controller;
     public Enemy_Discovery(EnemyController enemy) => controller = enemy;

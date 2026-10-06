@@ -22,7 +22,11 @@ public class SInputSystem : MonoBehaviour
     InputAction targetPAction;
 
     InputAction defenseAction;
-    InputAction avoidAction;
+
+    InputAction runAction;
+
+    /// <summary> 攻撃入力の受付状態 </summary>
+    bool eventActive = false;
 
     /// <summary>
     /// 移動入力
@@ -59,46 +63,13 @@ public class SInputSystem : MonoBehaviour
     /// 防御入力中
     /// </summary>
     public bool DefenseButton => defenseAction.IsPressed();
-    /// <summary>
-    /// 回避入力
-    /// </summary>
-    public bool AvoidTrigger => avoidAction.triggered;
+    
     /// <summary>
     /// 走り入力中
     /// </summary>
-    public bool RunButton => avoidAction.IsPressed();
+    public bool RunButton => runAction.IsPressed();
 
-    /// <summary>
-    /// 攻撃入力の受付状態
-    /// </summary>
-    bool attackActive = false;
-    /// <summary>
-    /// 攻撃タップ入力
-    /// </summary>
-    bool tapAttackTrigger = false;
-    /// <summary>
-    /// 攻撃タップ入力受付
-    /// </summary>
-    public bool TapAttackTrigger
-    {
-        get
-        {
-            if (tapAttackTrigger)
-            {
-                tapAttackTrigger = false;
-                return true;
-            }
-            return false;
-        }
-    }
-    /// <summary>
-    /// 攻撃ホールド状態
-    /// </summary>
-    public bool HoldAttack { get; private set; } = false;
-    /// <summary>
-    /// 攻撃未入力
-    /// </summary>
-    public bool DerivedAttackTrigger { get; private set; } = true;
+
 
     private void Awake()
     {
@@ -120,13 +91,11 @@ public class SInputSystem : MonoBehaviour
         targetTAction  = playerInput.actions["ChangeTarget"];
         targetPAction  = playerInput.actions["ChangePoint"];
         defenseAction  = playerInput.actions["Defense"];
-        avoidAction    = playerInput.actions["Avoid"];
+        runAction      = playerInput.actions["Run"];
 
         SwitchMap("Player");
     }
-    /// <summary>
-    /// ゲーム終了時、実行
-    /// </summary>
+    /// <summary> ゲーム終了時、実行 </summary>
     private void OnApplicationQuit()
     {
         instance = null;
@@ -142,42 +111,122 @@ public class SInputSystem : MonoBehaviour
         playerInput.SwitchCurrentActionMap(map);
 
         var attackAction = playerInput.actions["Attack"];
+        var voidAction = playerInput.actions["Avoid"];
         if (map == "Player")
         {
-            if (!attackActive)
+            if (!eventActive)
             {
-                attackActive = true;
+                eventActive = true;
                 attackAction.performed += OnAttackPerform;
                 attackAction.canceled += OnAttackCancel;
+                voidAction.performed += OnAvoidTap;
             }
             else
             {
-                attackActive = false;
+                eventActive = false;
+                attackAction.performed -= OnAttackPerform;
+                attackAction.canceled -= OnAttackCancel;
+                voidAction.performed -= OnAvoidTap;
+
             }
         }
     }
 
 
+    //----------------------------------------------Attack--Avoid
+
+    /// <summary> 攻撃タップトリガー状況 </summary>
+    bool tapAttackTrigger = false;
+    /// <summary> 攻撃タップトリガー状況取得 </summary>
+    public bool TapAttackTrigger
+    {
+        get
+        {
+            if (tapAttackTrigger)
+            {
+                tapAttackTrigger = false;
+                return true;
+            }
+            return false;
+        }
+    }
+    /// <summary> 攻撃ホールド状況 </summary>
+    bool holdAttack = false;
+    /// <summary> 攻撃ホールド状況取得 </summary>
+    public bool HoldAttack
+    {
+        get
+        {
+            if (holdAttack && !DerivedAttackTrigger)
+            {
+                DerivedAttackTrigger = true;
+                return true;
+            }
+            return false;
+        }
+    }
+    /// <summary> 攻撃ホールド解除状況取得 </summary>
+    public bool DerivedAttackTrigger { get; private set; } = false;
+
+    /// <summary> 回避受付状態 </summary>
+    bool avoidReception = true;
+    /// <summary> 回避トリガー </summary>
+    bool tapAvoidTrigger = false;
+    /// <summary> 回避トリガー状況取得 </summary>
+    public bool TapAvoidTrigger
+    {
+        get
+        {
+            if (tapAvoidTrigger)
+            {
+                tapAvoidTrigger = false;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /// <summary> 回避受付状態更新 </summary>
+    /// <param name="active">bool 有効 : 無効</param>
+    public void AvoidActive(bool active) => avoidReception = active;
+    /// <summary> 回避入力　押した時 </summary>
+    /// <param name="context"></param>
+    void OnAvoidTap(InputAction.CallbackContext context)
+    {
+        if (!avoidReception) return;
+
+        tapAttackTrigger = false;
+        holdAttack = false;
+        if (context.interaction is TapInteraction)
+        {
+            tapAvoidTrigger = true;
+        }
+    }
+    
+    /// <summary> 攻撃入力　押した時 </summary>
+    /// <param name="context"></param>
     void OnAttackPerform(InputAction.CallbackContext context)
     {
+        tapAvoidTrigger = false;
         if(context.interaction is TapInteraction)
         {
             tapAttackTrigger = true;
         }
         else
         {
-            HoldAttack = true;
-            DerivedAttackTrigger = false;
+            holdAttack = true;
         }
     }
-
+    /// <summary> 攻撃入力　離した時 </summary>
+    /// <param name="context"></param>
     void OnAttackCancel(InputAction.CallbackContext context)
     {
         if(context.interaction is HoldInteraction)
         {
-            HoldAttack = false;
-            DerivedAttackTrigger = true;
+            holdAttack = false;
+            DerivedAttackTrigger = false;
         }
     }
+
 
 }

@@ -51,6 +51,10 @@ public class EnemyController : BehaviorController
         ChangeState(StateIdle);
     }
 
+    private void Update()
+    {
+        state?.Update();
+    }
 
     /// <summary>
     /// “G(Player)‚ğ’T‚·
@@ -59,7 +63,7 @@ public class EnemyController : BehaviorController
     public bool Scouting()
     {
         //í“¬”ÍˆÍ“à‚É‚¢‚é‚©”»’è
-        if(!Area.Within) return false; 
+        if(!Area.Within) return false;
         //·‚ğæ“¾
         var diff = Area.PlayerPos.position - eyeTrans.position;
         if(diff.magnitude <= scouting)

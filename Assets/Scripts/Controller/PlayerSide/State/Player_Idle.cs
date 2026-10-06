@@ -4,7 +4,7 @@ using UnityEngine.InputSystem.XR;
 /// <summary>
 /// 待機
 /// </summary>
-public class Player_Idle : IStateBase
+public class Player_Idle : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Idle(PlayableBehaviorController player) => controller = player;
@@ -17,6 +17,12 @@ public class Player_Idle : IStateBase
 
     public override void Update()
     {
+        //攻撃入力検知
+        if (controller.Attack(out var comboAdd))
+        {
+            return;
+        }
+
         //ジャンプ入力検知
         if (controller.CheckJump())
         {
@@ -52,7 +58,7 @@ public class Player_Idle : IStateBase
         }
 
         //浮かないようにする
-        controller.moveVector.y = -0.01f;
+        controller.moveVector.y = -0.1f;
 
         controller.MoveAndRotate(Vector3.zero);
     }

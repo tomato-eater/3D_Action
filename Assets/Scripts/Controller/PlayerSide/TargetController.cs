@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEngine;
 
 /// <summary>
@@ -11,15 +10,10 @@ public class TargetController : MonoBehaviour
     [SerializeField] float angle;
     [SerializeField] LayerMask mask;
 
-    [Header("Refer")]
+    [Header("Component")]
     [SerializeField] PlayableBehaviorController player;
 
-    //入力状況
-    bool lockTrigger;
-    bool targetTrigger;
-    bool pointTrigger;
-
-    public BattleArea battleArea;
+    BattleArea battleArea;
     int individual;
     int part;
 
@@ -35,6 +29,12 @@ public class TargetController : MonoBehaviour
         //ターゲット変更
         if(player.target)
         {
+            if(Vector3.Distance(transform.position, player.target.transform.position) > scoutingRadius) {
+                player.target = null;
+                battleArea = null;
+                return;
+            }
+
             ChangeEnemy();
         }
     }
@@ -46,14 +46,8 @@ public class TargetController : MonoBehaviour
     /// </summary>
     void LockEnemy()
     {
-        if (!SInputSystem.instance.TargetTrigger)
+        if (SInputSystem.instance.TargetTrigger)
         {
-            lockTrigger = true;
-        }
-        else if (lockTrigger)
-        {
-            lockTrigger = false;
-
             //既にターゲットがいる
             if (player.target != null)
             {
@@ -63,19 +57,19 @@ public class TargetController : MonoBehaviour
             }
             //ターゲットがいない
             //敵の取得
-            if (GetShortestCollider(out var collider)) 
+            if (GetShortestCollider(out var collider))
             {
                 //最短にいる敵を取得
-                if (collider.transform.TryGetComponent<EnemyController>(out var controller)) 
+                if (collider.transform.TryGetComponent<EnemyController>(out var controller))
                 {
                     //ロックオン
                     part = 0;
                     player.target = controller.points[part];
                     //グループを取得
-                    if (collider.transform.parent.TryGetComponent<BattleArea>(out battleArea)) 
+                    if (collider.transform.parent.TryGetComponent<BattleArea>(out battleArea))
                     {
                         //ロックオンした奴は何番目か
-                        for (individual = 0; individual < battleArea.enemyControllers.Length; individual++) 
+                        for (individual = 0; individual < battleArea.enemyControllers.Length; individual++)
                         {
                             //発見次第終了
                             if (controller == battleArea.enemyControllers[individual])
@@ -131,24 +125,14 @@ public class TargetController : MonoBehaviour
     void ChangeEnemy()
     {
         //敵を変える
-        if (!SInputSystem.instance.ChangeTriggerT)
+        if (SInputSystem.instance.ChangeTriggerT)
         {
-            targetTrigger = true;
-        }
-        else if (targetTrigger)
-        {
-            targetTrigger = false;
             ChangeTarget();
         }
 
         //部位を変える
-        if (!SInputSystem.instance.ChangeTriggerP)
+        if (SInputSystem.instance.ChangeTriggerP)
         {
-            pointTrigger = true;
-        }
-        else if (pointTrigger)
-        {
-            pointTrigger = false;
             //部位が１つの場合は敵自体を変える
             if (battleArea.enemyControllers[individual].points.Length == 1)
             {

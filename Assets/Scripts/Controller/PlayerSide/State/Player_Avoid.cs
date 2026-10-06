@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ‰ñ”ğ
 /// </summary>
-public class Player_Avoid : IStateBase
+public class Player_Avoid : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Avoid(PlayableBehaviorController player) => controller = player;
@@ -30,6 +30,9 @@ public class Player_Avoid : IStateBase
 
     public override void Start()
     {
+        //‰ñ”ğ“ü—Í‚ªo—ˆ‚È‚¢‚æ‚¤‚É‚·‚é
+        SInputSystem.instance.AvoidActive(false);
+
         timer = 0;
         judgeJustAvoid = 0.01f;
         startPos = controller.MyTransform.position;
@@ -90,6 +93,8 @@ public class Player_Avoid : IStateBase
 
     public override void End()
     {
+        //‰ñ”ğ“ü—Í‚ª‚Å‚«‚é‚æ‚¤‚É‚·‚é
+        SInputSystem.instance.AvoidActive(true);
         judgeJustAvoid = 1;
     }
 }

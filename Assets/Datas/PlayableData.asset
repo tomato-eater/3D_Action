@@ -21,9 +21,8 @@ MonoBehaviour:
   jumpTop: 1.5
   gravityValue: 10
   maxFallSpeed: 5
-  judgeAttackTime: 0.1
   approachSpeed: 25
-  maxMoveDistance: 10
+  maxMoveDistance: 13
   avoidDistance: 2.5
   avoidTime: 0.25
   judgeAvoidPercent: 0.35

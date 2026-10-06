@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ‚Ô‚ç‚Â‚­
 /// </summary>
-public class Enemy_Loiter : IStateBase
+public class Enemy_Loiter : StateBase
 {
 
     EnemyController controller;

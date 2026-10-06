@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ステートテンプレート
 /// </summary>
-public abstract class IStateBase
+public abstract class StateBase
 {
     /// <summary>
     /// 切り替え直後
@@ -29,13 +29,13 @@ public class BehaviorController : MonoBehaviour
     /// <summary>
     /// 現在のステート
     /// </summary>
-    protected IStateBase state;
+    protected StateBase state;
 
     /// <summary>
     /// ステートの切り替え
     /// </summary>
     /// <param name="s">切り替え先のステート</param>
-    public void ChangeState(IStateBase s)
+    public void ChangeState(StateBase s)
     {
         state?.End();
         state = s;

@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
 
 /// <summary>
 /// プレイヤー操作
@@ -21,15 +19,21 @@ public class PlayableBehaviorController : BehaviorController
     [Header("Component")]
     [SerializeField] CharacterController controller;
     [SerializeField] Animator animator;
+    [SerializeField] PlayableIndividualController individual;
 
     public Player_Idle StateIdle {  get; private set; }
     public Player_Move StateMove { get; private set; }
     public Player_Jump StateJump {  get; private set; }
     public Player_Fall StateFall {  get; private set; }
+
     public Player_Approach StateApproach {  get; private set; }
-    public Player_TapAttack StateAttack { get; private set; }
+    public Player_TapAttack StateTapAttack { get; private set; }
+    public Player_HoldAttackBegin StateHoldAttackB {  get; private set; }
+    public Player_HoldAttackEnd StateHoldAttackE { get; private set; }
+
     public Player_Defense StateDefense {  get; private set; }
     public Player_Avoid StateAvoid { get; private set; }
+
 
     /// <summary>
     /// 自分のTransform
@@ -45,6 +49,7 @@ public class PlayableBehaviorController : BehaviorController
     public CharacterController Controller => controller;
     public Animator Animator => animator;
     public Transform AttackPoint => attackPoint;
+    public PlayableIndividualController Individual => individual;
 
 
     bool justSlowTrigger = false;
@@ -60,14 +65,19 @@ public class PlayableBehaviorController : BehaviorController
         StateMove = new Player_Move(this);
         StateJump = new Player_Jump(this);
         StateFall = new Player_Fall(this);
+
         StateApproach = new Player_Approach(this);
-        StateAttack = new Player_TapAttack(this);
+        StateTapAttack = new Player_TapAttack(this);
+        StateHoldAttackB = new Player_HoldAttackBegin(this);
+        StateHoldAttackE = new Player_HoldAttackEnd(this);
+
         StateDefense = new Player_Defense(this);
         StateAvoid = new Player_Avoid(this);
 
+        Individual.Set(this);
+
         ChangeState(StateIdle);
     }
-
 
     void Update()
     {
@@ -79,8 +89,29 @@ public class PlayableBehaviorController : BehaviorController
         }
     }
 
-
-
+    /// <summary>
+    /// 攻撃の判断
+    /// </summary>
+    /// <returns></returns>
+    public bool Attack(out bool comboAdd)
+    {
+        comboAdd = false;
+        //単押し
+        if (SInputSystem.instance.TapAttackTrigger)
+        {
+            comboAdd = true;
+            if (Individual.AttackDistance != 0) ChangeState(StateApproach);
+            else ChangeState(StateTapAttack);
+            return true;
+        }
+        //長押し
+        else if(SInputSystem.instance.HoldAttack)
+        {
+            ChangeState(StateHoldAttackB);
+            return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// 経過時間取得
@@ -120,7 +151,7 @@ public class PlayableBehaviorController : BehaviorController
     /// <returns>回避へ移行したか</returns>
     public bool Avoid()
     {
-        if (SInputSystem.instance.AvoidTrigger) 
+        if (SInputSystem.instance.TapAvoidTrigger) 
         { 
             ChangeState(StateAvoid);
             return true;
@@ -141,7 +172,7 @@ public class PlayableBehaviorController : BehaviorController
     /// 移動と回転
     /// </summary>
     /// <param name="rot">体を向ける方向</param>
-    public void MoveAndRotate(Vector3 rot)
+    public void MoveAndRotate(Vector3 rot, float rotMag = 1)
     {
         Controller.Move(moveVector * ElapsedTime());
 
@@ -149,7 +180,7 @@ public class PlayableBehaviorController : BehaviorController
         var moveForward = Vector3.Scale(rot, new Vector3(1, 0, 1));
         if (moveForward.sqrMagnitude > 0.001f)
         {
-            MyTransform.rotation = Quaternion.Slerp(MyTransform.rotation, Quaternion.LookRotation(moveForward), CharData.RotateSpeed * ElapsedTime());
+            MyTransform.rotation = Quaternion.Slerp(MyTransform.rotation, Quaternion.LookRotation(moveForward), (CharData.RotateSpeed * rotMag) * ElapsedTime());
         }
     }
     /// <summary>

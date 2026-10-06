@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 /// <summary>
 /// 移動
 /// </summary>
-public class Player_Move : IStateBase
+public class Player_Move : StateBase
 {
     PlayableBehaviorController controller;
     public Player_Move(PlayableBehaviorController player) => controller = player;
@@ -19,6 +19,12 @@ public class Player_Move : IStateBase
 
     public override void Update()
     {
+        //攻撃入力検知\
+        if (controller.Attack(out var comboAdd))
+        {
+            return;
+        }
+
         //ジャンプ入力検知
         if (controller.CheckJump())
         {
@@ -69,7 +75,7 @@ public class Player_Move : IStateBase
         //移動ベクトルに速度を掛ける
         controller.moveVector *= currentSpeed;
         //浮かないようにする
-        controller.moveVector.y = -0.01f;
+        controller.moveVector.y = -0.1f;
         //移動と回転
         controller.MoveAndRotate(controller.moveVector);
 

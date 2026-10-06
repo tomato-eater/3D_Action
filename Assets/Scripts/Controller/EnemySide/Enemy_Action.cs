@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy_Action : IStateBase
+public class Enemy_Action : StateBase
 {
 
     EnemyController controller;
