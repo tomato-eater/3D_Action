@@ -10,12 +10,16 @@ public class Player_Move : StateBase
     public Player_Move(PlayableBehaviorController player) => controller = player;
 
     /// <summary>
-    /// 現在の移動速度
+    /// 現在の移動速度 
     /// </summary>
-    float currentSpeed = 0.1f;
+    /// 初期が2(だいたい)未満だと、初めて移動するとき違和感が出る
+    float currentSpeed = 2.0f;
 
+    /// <summary>
+    /// 最後に入力した移動ベクトル
+    /// </summary>
+    /// 滑らかに停止したい
     Vector2 finalInput = Vector2.zero;
-
 
     public override void Update()
     {

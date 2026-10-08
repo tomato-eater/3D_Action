@@ -66,3 +66,38 @@ public class Weapon : MonoBehaviour
 
     }
 }
+/*
+ private void TraceRay(Vector3 start, Vector3 end)
+{
+    Vector3 direction = end - start;
+    float distance = direction.magnitude;
+
+    if (distance <= 0.001f) return;
+
+    // ★【修正の肝】線の代わりに「目に見えない直方体（ボックス）」を滑らせてぶつける！
+    // 剣の刃の厚み（横幅）や肉厚をここで指定します（例: 幅10cm、高さ10cmの箱）
+    Vector3 boxExtents = new Vector3(0.1f, 0.1f, 0.1f); 
+    
+    // 箱の向きを移動方向に合わせる
+    Quaternion boxRotation = Quaternion.LookRotation(direction.normalized);
+
+    // デバッグ用の赤い線はそのまま残して確認しやすくします
+    Debug.DrawLine(start, end, Color.red, 1.0f);
+
+    // Physics.Raycast を Physics.BoxCast に変更
+    if (Physics.BoxCast(start, boxExtents, direction.normalized, out RaycastHit hit, boxRotation, distance, enemyLayer))
+    {
+        Collider enemyCollider = hit.collider;
+        if (!alreadyHitEnemies.Contains(enemyCollider))
+        {
+            alreadyHitEnemies.Add(enemyCollider);
+            if (enemyCollider.TryGetComponent<EnemyController>(out var enemy))
+            {
+                enemy.TakeDamage(10);
+            }
+        }
+    }
+}
+
+ 
+ */

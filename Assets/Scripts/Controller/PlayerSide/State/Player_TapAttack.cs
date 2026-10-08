@@ -23,6 +23,11 @@ public class Player_TapAttack : StateBase
             return;
         }
 
+        controller.moveVector = Vector3.zero;
+        Vector3 rot = controller.target ? controller.target.transform.position - controller.MyTransform.position : Vector3.zero;
+        
+        controller.MoveAndRotate(rot, 1.5f);
+
         controller.Animator.SetTrigger("TapAttack");
         combo++;
         endAni = false;

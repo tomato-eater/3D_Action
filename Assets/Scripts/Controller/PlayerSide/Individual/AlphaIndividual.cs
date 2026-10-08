@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class AlphaIndividual : PlayableIndividualController
 {
-    public override float AttackDistance => 1.0f;
+    public override float AttackDistance => 0.75f;
 
     public override int MaxCombo => 3;
 
