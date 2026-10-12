@@ -20,7 +20,7 @@ MonoBehaviour:
   airSpeed: 3
   jumpTop: 1.5
   gravityValue: 10
-  maxFallSpeed: 5
+  maxFallSpeed: 10
   approachSpeed: 25
   maxMoveDistance: 13
   avoidDistance: 2.5

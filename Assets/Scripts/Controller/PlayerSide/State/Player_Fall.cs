@@ -45,15 +45,15 @@ public class Player_Fall : StateBase
         controller.Animator.SetFloat("MoveVelocity", moveSpeed);
 
         //’…’n”»’è
-        if (controller.IsGround())
+        if (controller.Controller.isGrounded)
         {
+            controller.Animator.SetTrigger("Land");
             controller.ChangeState(moveSpeed == 0 ? controller.StateIdle : controller.StateMove);
         }
     }
 
     public override void End()
     {
-        controller.Animator.SetTrigger("Land");
 
     }
 }

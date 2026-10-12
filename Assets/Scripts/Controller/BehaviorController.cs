@@ -26,6 +26,10 @@ public abstract class StateBase
 /// </summary>
 public class BehaviorController : MonoBehaviour
 {
+    [SerializeField] protected Animator animator;
+
+    public Animator Animator => animator;
+
     /// <summary>
     /// 現在のステート
     /// </summary>

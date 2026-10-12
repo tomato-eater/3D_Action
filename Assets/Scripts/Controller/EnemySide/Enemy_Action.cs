@@ -3,8 +3,8 @@ using UnityEngine;
 public class Enemy_Action : StateBase
 {
 
-    EnemyController controller;
-    public Enemy_Action(EnemyController enemy) => controller = enemy;
+    EnemyBehaviorController controller;
+    public Enemy_Action(EnemyBehaviorController enemy) => controller = enemy;
 
 
     public override void Start()

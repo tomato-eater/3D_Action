@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 /// <summary>
@@ -9,7 +11,6 @@ public class PlayableBehaviorController : BehaviorController
     [Header("Parameter")]
     [SerializeField] PlayableData charData;
     [SerializeField] Transform attackPoint;
-    [SerializeField] float judgeAttackDistance;
 
     [Header("Refer")]
     [SerializeField] LayerMask groundMask;
@@ -18,7 +19,6 @@ public class PlayableBehaviorController : BehaviorController
 
     [Header("Component")]
     [SerializeField] CharacterController controller;
-    [SerializeField] Animator animator;
     [SerializeField] PlayableIndividualController individual;
 
     public Player_Idle StateIdle {  get; private set; }
@@ -45,15 +45,15 @@ public class PlayableBehaviorController : BehaviorController
     public Vector3 moveVector;
 
     public PlayableData CharData => charData;
-    public float JudgeAttackDistance => judgeAttackDistance;
     public CharacterController Controller => controller;
-    public Animator Animator => animator;
     public Transform AttackPoint => attackPoint;
     public PlayableIndividualController Individual => individual;
 
-
-    bool justSlowTrigger = false;
+    /// <summary>
+    /// ジャスト回避時の残りスロー時間
+    /// </summary>
     float slowTimer = 0;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -83,7 +83,7 @@ public class PlayableBehaviorController : BehaviorController
     {
         state?.Update();
 
-        if (justSlowTrigger)
+        if (slowTimer != 0)
         {
             NowSlow();
         }
@@ -117,19 +117,13 @@ public class PlayableBehaviorController : BehaviorController
     /// 経過時間取得
     /// </summary>
     /// <returns>プレイヤー以外スロー ? timeScaleの影響を受けない : timeScaleの影響を受ける </returns>
-    public float ElapsedTime()
-    {
-        return justSlowTrigger ? Time.unscaledDeltaTime : Time.deltaTime;
-    }
+    public float ElapsedTime() => slowTimer != 0 ? Time.unscaledDeltaTime : Time.deltaTime;
 
     /// <summary>
     /// 着地判定
     /// </summary>
     /// <returns>着地している ? true : false</returns>
-    public bool IsGround()
-    {
-        return Physics.CheckSphere(MyTransform.position, Controller.radius, groundMask);
-    }
+    public bool IsGround() => Physics.CheckSphere(MyTransform.position, Controller.radius * 0.5f, groundMask);
 
     /// <summary>
     /// ジャンプの判断
@@ -163,11 +157,8 @@ public class PlayableBehaviorController : BehaviorController
     /// カメラの前方座標を取得
     /// </summary>
     /// <returns>カメラの前方座標</returns>
-    public Vector3 CameraForward()
-    {
-        return Vector3.Scale(cameraTrans.forward, new Vector3(1, 0, 1)).normalized;
-    }
-    
+    public Vector3 CameraForward() => Vector3.Scale(cameraTrans.forward, new Vector3(1, 0, 1)).normalized;
+
     /// <summary>
     /// 移動と回転
     /// </summary>
@@ -187,10 +178,7 @@ public class PlayableBehaviorController : BehaviorController
     /// 水平面の移動速度を取得
     /// </summary>
     /// <returns>水平面の移動速度</returns>
-    public float GetMoveSpeed()
-    {
-         return new Vector2(Controller.velocity.x, Controller.velocity.z).magnitude;
-    }
+    public float GetMoveSpeed() => new Vector2(Controller.velocity.x, Controller.velocity.z).magnitude;
 
     /// <summary>
     /// コライダーが触れたら(攻撃を喰らったら)通る
@@ -213,7 +201,6 @@ public class PlayableBehaviorController : BehaviorController
     /// </summary>
     void StartSlow()
     {
-        justSlowTrigger = true;
         slowTimer = CharData.SlowTime;
 
         Time.timeScale = CharData.SlowScale;
@@ -227,8 +214,7 @@ public class PlayableBehaviorController : BehaviorController
     {
         if(slowTimer <= 0)
         {
-            justSlowTrigger = false;
-
+            slowTimer = 0;
             Time.timeScale = 1.0f;
             Animator.updateMode = AnimatorUpdateMode.Normal;
         }
@@ -244,6 +230,7 @@ public class PlayableBehaviorController : BehaviorController
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position, Controller.radius);
+        Gizmos.DrawSphere(transform.position, Controller.radius * 0.5f);
     }
 }
+ 

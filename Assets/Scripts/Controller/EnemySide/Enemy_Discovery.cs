@@ -6,8 +6,8 @@ using UnityEngine;
 /// </summary>
 public class Enemy_Discovery : StateBase
 {
-    EnemyController controller;
-    public Enemy_Discovery(EnemyController enemy) => controller = enemy;
+    EnemyBehaviorController controller;
+    public Enemy_Discovery(EnemyBehaviorController enemy) => controller = enemy;
 
     /// <summary>
     /// ‰¼‚Ì•Ï”

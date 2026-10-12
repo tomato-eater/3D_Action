@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 /// <summary>
@@ -73,6 +75,7 @@ public abstract class PlayableIndividualController : MonoBehaviour
             if(current.TryGetComponent<Weapon>(out var weapon))
             {
                 weapons[i] = weapon;
+                weapons[i].Set(this);
             }
         }
     }
@@ -94,6 +97,31 @@ public abstract class PlayableIndividualController : MonoBehaviour
         if (weapons.Count <= no) return;
         weapons[no].EndAttack();
     }
+
+
+    [SerializeField] protected float hitStopTime;
+    protected CancellationTokenSource hitStopToken;
+
+    /// <summary>
+    /// ヒットストップ開始
+    /// </summary>
+    public void HitStop()
+    {
+        hitStopToken?.Cancel();
+        hitStopToken?.Dispose();
+
+        hitStopToken = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+        HitStopAsync(hitStopToken.Token).Forget();
+    }
+    async UniTaskVoid HitStopAsync(CancellationToken token)
+    {
+        controller.Animator.speed = 0;
+
+        await UniTask.Delay(System.TimeSpan.FromSeconds(hitStopTime), DelayType.UnscaledDeltaTime, cancellationToken: token).SuppressCancellationThrow();
+
+        controller.Animator.speed = 1;
+    }
+
 
     /// <summary>
     /// 攻撃時の許容距離    0の場合そもそも接近しない

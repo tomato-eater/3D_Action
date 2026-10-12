@@ -60,7 +60,7 @@ public class TargetController : MonoBehaviour
             if (GetShortestCollider(out var collider))
             {
                 //Å’Z‚É‚¢‚é“G‚ğæ“¾
-                if (collider.transform.TryGetComponent<EnemyController>(out var controller))
+                if (collider.transform.TryGetComponent<EnemyBehaviorController>(out var controller))
                 {
                     //ƒƒbƒNƒIƒ“
                     part = 0;
@@ -95,7 +95,9 @@ public class TargetController : MonoBehaviour
         Collider[] hit = Physics.OverlapSphere(player.MyTransform.position, scoutingRadius, mask);
         //‹‚È‚¯‚ê‚ÎI‚í‚è
         if (hit.Length == 0)
+        {
             return false;
+        }
         //ŠY“–‚µ‚½“G‚ğô‚¢o‚·
         foreach (var enemy in hit)
         {

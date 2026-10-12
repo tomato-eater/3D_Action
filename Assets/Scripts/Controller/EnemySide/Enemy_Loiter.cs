@@ -6,8 +6,8 @@ using UnityEngine;
 public class Enemy_Loiter : StateBase
 {
 
-    EnemyController controller;
-    public Enemy_Loiter(EnemyController enemy) => controller = enemy;
+    EnemyBehaviorController controller;
+    public Enemy_Loiter(EnemyBehaviorController enemy) => controller = enemy;
 
     bool move = false;
 

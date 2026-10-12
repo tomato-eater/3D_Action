@@ -1,11 +1,10 @@
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
 /// 敵のコントローラー
 /// </summary>
-public class EnemyController : BehaviorController
+public class EnemyBehaviorController : BehaviorController
 {
     [Header("Parameter")]
     [SerializeField] Transform eyeTrans;
@@ -18,6 +17,7 @@ public class EnemyController : BehaviorController
     [Header("Refer")]
     [SerializeField, Tooltip("バトルエリア")] BattleArea battleArea;
     [Tooltip("各部位")] public TargetPoint[] points;
+    [SerializeField, Tooltip("ステータス")] StatusBase status;
 
     [Header("Component")]
     [SerializeField] NavMeshAgent agent;
@@ -26,6 +26,7 @@ public class EnemyController : BehaviorController
     public Enemy_Idle StateIdle { get; private set; }
     public Enemy_Loiter StateLoiter {  get; private set; }
     public Enemy_Discovery StateDiscovery { get; private set; }
+    public Enemy_Death StateDeath { get; private set; }
 
 
     public Transform MyTransform { get; private set; }
@@ -47,12 +48,15 @@ public class EnemyController : BehaviorController
         StateIdle = new Enemy_Idle(this);
         StateLoiter = new Enemy_Loiter(this);
         StateDiscovery = new Enemy_Discovery(this);
+        StateDeath = new Enemy_Death(this);
 
         ChangeState(StateIdle);
     }
 
     private void Update()
     {
+        if (status.Hp <= 0 && state != StateDeath) Death();
+
         state?.Update();
     }
 
@@ -81,11 +85,12 @@ public class EnemyController : BehaviorController
         return false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void Death()
     {
-        Debug.Log("Hit");
-    }
+        agent.enabled = false;
 
+        ChangeState(StateDeath);
+    }
 
     /// <summary>
     /// 索敵範囲の可視化

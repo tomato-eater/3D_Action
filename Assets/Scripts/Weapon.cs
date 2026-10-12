@@ -3,20 +3,30 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    PlayableIndividualController controller;
+
     [SerializeField] LayerMask enemyLayer;
 
-    [SerializeField, Tooltip("レイを飛ばす基準")] List<Transform> mark = new List<Transform>();
+    [SerializeField, Tooltip("レイを飛ばす基準_外側")] Transform markOutside;
+    [SerializeField, Tooltip("レイを飛ばす基準_内側")] Transform markInside;
 
-    List<Vector3> beforeMark = new List<Vector3>();
+    /// <summary>
+    /// 1フレーム前の基準_外側
+    /// </summary>
+    Vector3 beforeOut;
+    /// <summary>
+    /// 1フレーム前の基準_内側
+    /// </summary>
+    Vector3 beforeIn;
 
     bool attack = false;
 
     List<Collider> enemyColl = new List<Collider>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public void Set(PlayableIndividualController i)
     {
-        while (mark.Count > beforeMark.Count) beforeMark.Add(Vector3.zero);
+        controller = i;
         EndAttack();
     }
 
@@ -27,8 +37,9 @@ public class Weapon : MonoBehaviour
     {
         attack = true;
         enemyColl.Clear();
-        for (int i = 0; i < mark.Count; i++)
-            beforeMark[i] = mark[i].position;
+
+        beforeOut = markOutside.position;
+        beforeIn = markInside.position;
     }
     /// <summary>
     /// 攻撃判定終了
@@ -40,64 +51,93 @@ public class Weapon : MonoBehaviour
     {
         if (!attack) return;
 
-        for (int i = 0; i < mark.Count; i++) 
+        var currentOut = markOutside.position;
+        var currentIn = markInside.position;
+        //４頂点の中心を求める
+        var center = (currentOut + currentIn + beforeOut + beforeIn) * 0.25f;
+        //移動ベクトル
+        var moveDir = currentOut - beforeOut;
+        //長さのベクトル
+        var lengthDir = currentOut - currentIn;
+        
+        if(moveDir.sqrMagnitude > 0.001f && lengthDir.sqrMagnitude > 0.001f)
         {
-            var pos = mark[i].position;
+            //Boxの定義
+            var boxHalfExtents = new Vector3(moveDir.magnitude * 0.5f, lengthDir.magnitude * 0.5f, 0.05f);
+            //Boxの回転
+            var faceNormal = Vector3.Cross(moveDir, lengthDir);
+            Quaternion boxRotation = Quaternion.LookRotation(faceNormal.normalized, lengthDir.normalized);
 
-            var direction = beforeMark[i] - pos;
-            var distance = direction.magnitude;
-            if (distance <= 0.001f) continue;
-
-            if (Physics.Raycast(beforeMark[i], direction.normalized, out var hit, distance, enemyLayer))
+            DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, UnityEngine.Color.green);
+            //判定の取得
+            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, enemyLayer);
+            bool hitStop = false;
+            foreach(var  collider in colliders )
             {
-                var collider = hit.collider;
+                //既に判定を取得していれば飛ばす
+                if(enemyColl.Contains(collider)) continue;
 
-                if (!enemyColl.Contains(collider))
-                {
-                    //enemyColl.Add(collider);
-                    Debug.Log("hit");
-
+                hitStop = true;
+                enemyColl.Add(collider);
+                if(collider.TryGetComponent<StatusBase>(out var target)){
+                    target.Damage(50);
                 }
             }
 
-            beforeMark[i] = pos;
+            //攻撃が当たっていればPlayHitStop
+            if (hitStop)
+                controller.HitStop();
         }
 
-
+        beforeOut = currentOut;
+        beforeIn = currentIn;
     }
-}
-/*
- private void TraceRay(Vector3 start, Vector3 end)
-{
-    Vector3 direction = end - start;
-    float distance = direction.magnitude;
-
-    if (distance <= 0.001f) return;
-
-    // ★【修正の肝】線の代わりに「目に見えない直方体（ボックス）」を滑らせてぶつける！
-    // 剣の刃の厚み（横幅）や肉厚をここで指定します（例: 幅10cm、高さ10cmの箱）
-    Vector3 boxExtents = new Vector3(0.1f, 0.1f, 0.1f); 
     
-    // 箱の向きを移動方向に合わせる
-    Quaternion boxRotation = Quaternion.LookRotation(direction.normalized);
 
-    // デバッグ用の赤い線はそのまま残して確認しやすくします
-    Debug.DrawLine(start, end, Color.red, 1.0f);
 
-    // Physics.Raycast を Physics.BoxCast に変更
-    if (Physics.BoxCast(start, boxExtents, direction.normalized, out RaycastHit hit, boxRotation, distance, enemyLayer))
+    // 当たり判定の確認
+    private void DebugDrawBox(Vector3 center, Vector3 size, Quaternion rotation, UnityEngine.Color color)
     {
-        Collider enemyCollider = hit.collider;
-        if (!alreadyHitEnemies.Contains(enemyCollider))
+        Vector3 half = size * 0.5f;
+
+        // 箱のローカル座標における 8 つの頂点を定義
+        Vector3[] vertices = new Vector3[8]
         {
-            alreadyHitEnemies.Add(enemyCollider);
-            if (enemyCollider.TryGetComponent<EnemyController>(out var enemy))
-            {
-                enemy.TakeDamage(10);
-            }
+        new Vector3(-half.x, -half.y, -half.z),
+        new Vector3( half.x, -half.y, -half.z),
+        new Vector3( half.x,  half.y, -half.z),
+        new Vector3(-half.x,  half.y, -half.z),
+        new Vector3(-half.x, -half.y,  half.z),
+        new Vector3( half.x, -half.y,  half.z),
+        new Vector3( half.x,  half.y,  half.z),
+        new Vector3(-half.x,  half.y,  half.z)
+        };
+
+        // 8 つの頂点に、現在の「中心（center）」と「角度（rotation）」を掛け算して世界座標に変換
+        for (int i = 0; i < 8; i++)
+        {
+            vertices[i] = rotation * vertices[i] + center;
         }
+
+        // 12本の辺を Debug.DrawLine で繋いで箱の形にする（1.0f 秒間画面に残す）
+        float duration = 1.0f;
+
+        // 手前の面
+        Debug.DrawLine(vertices[0], vertices[1], color, duration);
+        Debug.DrawLine(vertices[1], vertices[2], color, duration);
+        Debug.DrawLine(vertices[2], vertices[3], color, duration);
+        Debug.DrawLine(vertices[3], vertices[0], color, duration);
+
+        // 奥の面
+        Debug.DrawLine(vertices[4], vertices[5], color, duration);
+        Debug.DrawLine(vertices[5], vertices[6], color, duration);
+        Debug.DrawLine(vertices[6], vertices[7], color, duration);
+        Debug.DrawLine(vertices[7], vertices[4], color, duration);
+
+        // つなぎの4本
+        Debug.DrawLine(vertices[0], vertices[4], color, duration);
+        Debug.DrawLine(vertices[1], vertices[5], color, duration);
+        Debug.DrawLine(vertices[2], vertices[6], color, duration);
+        Debug.DrawLine(vertices[3], vertices[7], color, duration);
     }
 }
-
- 
- */

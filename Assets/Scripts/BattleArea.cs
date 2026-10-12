@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class BattleArea : MonoBehaviour
 {
@@ -7,7 +6,7 @@ public class BattleArea : MonoBehaviour
     [SerializeField, Tooltip("—LŒø‹——£")] float activeRadius = 60.0f;
 
     [SerializeField, Tooltip("í“¬ƒGƒŠƒA”¼Œa")] float radius;
-    [Tooltip("“G")] public EnemyController[] enemyControllers;
+    [Tooltip("“G")] public EnemyBehaviorController[] enemyControllers;
 
     /// <summary>
     /// •`‰æ”ÍˆÍ“à‚É“ü‚Á‚½

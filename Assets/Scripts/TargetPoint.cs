@@ -11,4 +11,18 @@ public class TargetPoint : MonoBehaviour
     //半径取得用
     public float Radius => radius;
 
+    /// <summary>
+    /// 自分自身のコントローラー(親)
+    /// </summary>
+    EnemyBehaviorController enemyController;
+
+    private void Start()
+    {
+        transform.parent.TryGetComponent<EnemyBehaviorController>(out enemyController);
+    }
+
+    public void Damage(float damage)
+    {
+        Debug.Log(damage);
+    }
 }

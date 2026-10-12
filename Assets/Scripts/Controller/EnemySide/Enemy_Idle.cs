@@ -6,8 +6,8 @@ using UnityEngine;
 public class Enemy_Idle : StateBase
 {
 
-    EnemyController controller;
-    public Enemy_Idle(EnemyController enemy) => controller = enemy;
+    EnemyBehaviorController controller;
+    public Enemy_Idle(EnemyBehaviorController enemy) => controller = enemy;
 
     float time = 0;
     float timer = 0;
