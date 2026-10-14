@@ -104,7 +104,7 @@ public class CameraController : MonoBehaviour
     /// <param name="speed">‘¬“x</param>
     void CameraMove(ref float yaw, ref float pitch, Vector2 speed)
     {
-        var move = SInputSystem.instance.CameraMove;
+        var move = SInputSystem.Instance.CameraMove;
         yaw += move.x * speed.x * player.ElapsedTime();
         pitch += move.y * speed.y * player.ElapsedTime();
     }

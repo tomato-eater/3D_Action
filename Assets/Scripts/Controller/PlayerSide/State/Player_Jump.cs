@@ -26,7 +26,7 @@ public class Player_Jump : StateBase
         }
 
         //ˆÚ“®
-        var moveValue = SInputSystem.instance.MoveValue;
+        var moveValue = SInputSystem.Instance.MoveValue;
         if(moveValue != Vector2.zero)
         {
             var forward = controller.CameraForward();

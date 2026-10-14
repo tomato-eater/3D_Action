@@ -27,14 +27,14 @@ public class Player_Defense : StateBase
             return;
         }
         //防御解除
-        if (!SInputSystem.instance.DefenseButton || SGameManager.instance.ActivityMode != ActivityMode.Battle)
+        if (!SInputSystem.Instance.DefenseButton || SGameManager.instance.ActivityMode != ActivityMode.Battle)
         {
             controller.ChangeState(controller.StateIdle);
             return;
         }
 
         //移動
-        var moveValue = SInputSystem.instance.MoveValue;
+        var moveValue = SInputSystem.Instance.MoveValue;
         //移動ベクトル
         var forward = controller.CameraForward();
         //移動量計算

@@ -31,14 +31,14 @@ public class Player_Avoid : StateBase
     public override void Start()
     {
         //‰ñ”ğ“ü—Í‚ªo—ˆ‚È‚¢‚æ‚¤‚É‚·‚é
-        SInputSystem.instance.AvoidActive(false);
+        SInputSystem.Instance.AvoidActive(false);
 
         timer = 0;
         judgeJustAvoid = 0.01f;
         startPos = controller.MyTransform.position;
 
         //ˆÚ“®•ûŒü‚Æ—Ê‚ğ‹‚ß‚é
-        var moveValue = SInputSystem.instance.MoveValue;
+        var moveValue = SInputSystem.Instance.MoveValue;
         if(moveValue != Vector2.zero)
         {
             var forward = controller.CameraForward();
@@ -94,7 +94,7 @@ public class Player_Avoid : StateBase
     public override void End()
     {
         //‰ñ”ğ“ü—Í‚ª‚Å‚«‚é‚æ‚¤‚É‚·‚é
-        SInputSystem.instance.AvoidActive(true);
+        SInputSystem.Instance.AvoidActive(true);
         judgeJustAvoid = 1;
     }
 }

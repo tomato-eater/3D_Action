@@ -46,7 +46,7 @@ public class TargetController : MonoBehaviour
     /// </summary>
     void LockEnemy()
     {
-        if (SInputSystem.instance.TargetTrigger)
+        if (SInputSystem.Instance.TargetTrigger)
         {
             //Šù‚Éƒ^[ƒQƒbƒg‚ª‚¢‚é
             if (player.target != null)
@@ -127,13 +127,13 @@ public class TargetController : MonoBehaviour
     void ChangeEnemy()
     {
         //“G‚ğ•Ï‚¦‚é
-        if (SInputSystem.instance.ChangeTriggerT)
+        if (SInputSystem.Instance.ChangeTriggerT)
         {
             ChangeTarget();
         }
 
         //•”ˆÊ‚ğ•Ï‚¦‚é
-        if (SInputSystem.instance.ChangeTriggerP)
+        if (SInputSystem.Instance.ChangeTriggerP)
         {
             //•”ˆÊ‚ª‚P‚Â‚Ìê‡‚Í“G©‘Ì‚ğ•Ï‚¦‚é
             if (battleArea.enemyControllers[individual].points.Length == 1)

@@ -43,7 +43,7 @@ public class Player_Idle : StateBase
                 return;
             }
             //–hŒä“ü—ÍŒŸ’m
-            if (SInputSystem.instance.DefenseButton)
+            if (SInputSystem.Instance.DefenseButton)
             {
                 controller.ChangeState(controller.StateDefense);
                 return;
@@ -51,7 +51,7 @@ public class Player_Idle : StateBase
         }
 
         //ˆÚ“®“ü—ÍŒŸ’m
-        if (SInputSystem.instance.MoveValue != Vector2.zero)
+        if (SInputSystem.Instance.MoveValue != Vector2.zero)
         {
             controller.ChangeState(controller.StateMove);
             return;

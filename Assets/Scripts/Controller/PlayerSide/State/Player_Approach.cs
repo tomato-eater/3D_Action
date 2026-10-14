@@ -49,31 +49,30 @@ public class Player_Approach : StateBase
             myPos += adjustment * controller.Controller.radius;
             enemyPos -= adjustment * controller.target.Radius;
 
-            //è\ï™Ç…ãﬂÇØÇÍÇŒ
-            if (Vector3.Distance(myPos, enemyPos) <= controller.Individual.AttackDistance)
+            //è\ï™Ç…ãﬂÇ¢Ç©
+            var dis = Vector3.Distance(myPos, enemyPos) <= controller.Individual.AttackDistance;
+
+            //à⁄ìÆÅEâÒì]ï˚å¸åvéZ
+            var moveVector = (enemyPos - myPos).normalized * controller.CharData.ApproachSpeed;
+
+            if (!dis) controller.moveVector = moveVector;
+            else controller.moveVector = Vector3.zero;
+
+            controller.MoveAndRotate(moveVector, 2.5f);
+
+            if (dis && endAni)
             {
-                if (endAni)
+                controller.ChangeState(controller.StateTapAttack);
+                return;
+            }
+            //à⁄ìÆãóó£Ç™å¿äEÇ©
+            if (Vector3.Distance(startPos, controller.MyTransform.position) >= controller.CharData.MaxMoveDistance) 
+            {
+                if (endAni) 
                 {
                     controller.ChangeState(controller.StateTapAttack);
                     return;
                 }
-            }
-            else
-            {
-                //à⁄ìÆãóó£Ç™å¿äEÇ©
-                if (Vector3.Distance(startPos, controller.MyTransform.position) >= controller.CharData.MaxMoveDistance)
-                {
-                    if (endAni)
-                    {
-                        controller.ChangeState(controller.StateTapAttack);
-                        return;
-                    }
-                }
-
-                //à⁄ìÆó åvéZ
-                controller.moveVector = (enemyPos - myPos).normalized * controller.CharData.ApproachSpeed;
-
-                controller.MoveAndRotate(controller.moveVector, 2.5f);
             }
         }
     }

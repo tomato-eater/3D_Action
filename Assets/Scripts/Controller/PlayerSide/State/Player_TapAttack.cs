@@ -58,14 +58,13 @@ public class Player_TapAttack : StateBase
                     if (!comboAdd)
                     {
                         combo = 0;
-                        controller.Animator.SetTrigger("EndAttack");
                     }
                     return;
                 }
             }
             if (time > 0.15f)
             {
-                bool tapAttackTrigger = SInputSystem.instance.TapAttackTrigger;
+                bool tapAttackTrigger = SInputSystem.Instance.TapAttackTrigger;
                 combo = 0;
                 controller.Animator.SetTrigger("EndAttack");
                 controller.ChangeState(controller.StateIdle);

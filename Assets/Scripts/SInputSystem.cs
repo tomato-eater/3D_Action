@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Interactions;
 [RequireComponent(typeof(PlayerInput))]
 public class SInputSystem : MonoBehaviour
 {
-    public static SInputSystem instance { get; private set; }
+    public static SInputSystem Instance{ get; private set; }
 
     PlayerInput playerInput;
 
@@ -73,13 +73,13 @@ public class SInputSystem : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        Instance = this;
         DontDestroyOnLoad(gameObject);
 
         TryGetComponent<PlayerInput>(out playerInput);
@@ -98,7 +98,7 @@ public class SInputSystem : MonoBehaviour
     /// <summary> ゲーム終了時、実行 </summary>
     private void OnApplicationQuit()
     {
-        instance = null;
+        Instance = null;
     }
     
 
@@ -193,7 +193,7 @@ public class SInputSystem : MonoBehaviour
     /// <param name="context"></param>
     void OnAvoidTap(InputAction.CallbackContext context)
     {
-        if (!avoidReception) return;
+        if (SGameManager.instance.ActivityMode != ActivityMode.Battle || !avoidReception) return;
 
         tapAttackTrigger = false;
         holdAttack = false;

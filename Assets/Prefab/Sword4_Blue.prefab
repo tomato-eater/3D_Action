@@ -169,7 +169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 2176
   markOutside: {fileID: 647826099306531886}
   markInside: {fileID: 6944081739933358427}
-  hitStopTime: 0

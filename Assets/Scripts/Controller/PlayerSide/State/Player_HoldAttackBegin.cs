@@ -14,13 +14,6 @@ public class Player_HoldAttackBegin : StateBase
     {
         Debug.Log("ç°Ç∂Ç·Ç»Ç¢");
 
-        if(controller.Individual.MaxCharge <= 0)
-        {
-            controller.Individual.Release(0);
-            controller.ChangeState(controller.StateHoldAttackE);
-            return;
-        }
-        chargeValue = 0;
 
         controller.Individual.OnHold(true, chargeValue);
 
@@ -32,7 +25,7 @@ public class Player_HoldAttackBegin : StateBase
 
         controller.Individual.OnHold(false, chargeValue);
 
-        if ((chargeValue >= controller.Individual.MaxCharge && controller.Individual.AutoChange) || !SInputSystem.instance.DerivedAttackTrigger)
+        if ((chargeValue >= controller.Individual.MaxCharge && controller.Individual.AutoChange) || !SInputSystem.Instance.DerivedAttackTrigger)
         {
 
             controller.Individual.Release(chargeValue);

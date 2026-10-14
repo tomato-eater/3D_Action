@@ -8,31 +8,27 @@ public class Player_HoldAttackEnd : StateBase
     PlayableBehaviorController controller;
     public Player_HoldAttackEnd(PlayableBehaviorController player) => controller = player;
 
+    bool endAni;
 
-    float time;
 
     public override void Start()
     {
-        Debug.Log("HoldAttack");
+        controller.Animator.SetTrigger("HoldAttackE");
+        endAni = false;
     }
 
     public override void Update()
     {
+        if (!endAni)
+            endAni = controller.Individual.EndAnimator;
 
-        time += controller.ElapsedTime();
-        if (time > 1.0f)
+        if (endAni)
         {
-            //‰ñ”ð“ü—ÍŒŸ’m
-            if (SGameManager.instance.ActivityMode == ActivityMode.Battle && controller.Avoid())
-            {
-                return;
-            }
-        }
-        if (time > 1.8f)
-        {
+            controller.Animator.SetTrigger("EndAttack");
             controller.ChangeState(controller.StateIdle);
-            return;
         }
+       
+
     }
 
 }

@@ -1,5 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System.Threading;
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +19,7 @@ public class PlayableBehaviorController : BehaviorController
     [SerializeField] CharacterController controller;
     [SerializeField] PlayableIndividualController individual;
 
-    public Player_Idle StateIdle {  get; private set; }
+    public Player_Idle StateIdle { get; private set; }
     public Player_Move StateMove { get; private set; }
     public Player_Jump StateJump {  get; private set; }
     public Player_Fall StateFall {  get; private set; }
@@ -97,7 +95,7 @@ public class PlayableBehaviorController : BehaviorController
     {
         comboAdd = false;
         //単押し
-        if (SInputSystem.instance.TapAttackTrigger)
+        if (SInputSystem.Instance.TapAttackTrigger)
         {
             comboAdd = true;
             if (Individual.AttackDistance != 0) ChangeState(StateApproach);
@@ -105,9 +103,12 @@ public class PlayableBehaviorController : BehaviorController
             return true;
         }
         //長押し
-        else if(SInputSystem.instance.HoldAttack)
+        else if(SInputSystem.Instance.HoldAttack)
         {
-            ChangeState(StateHoldAttackB);
+            if (Individual.MaxCharge <= 0)
+                ChangeState(StateHoldAttackE);
+            else
+                ChangeState(StateHoldAttackB);
             return true;
         }
         return false;
@@ -131,7 +132,7 @@ public class PlayableBehaviorController : BehaviorController
     /// <returns>ジャンプの判断</returns>
     public bool CheckJump()
     {
-        if (SInputSystem.instance.JumpTrigger)
+        if (SInputSystem.Instance.JumpTrigger)
         {
             ChangeState(StateJump);
             return true;
@@ -145,7 +146,7 @@ public class PlayableBehaviorController : BehaviorController
     /// <returns>回避へ移行したか</returns>
     public bool Avoid()
     {
-        if (SInputSystem.instance.TapAvoidTrigger) 
+        if (SInputSystem.Instance.TapAvoidTrigger) 
         { 
             ChangeState(StateAvoid);
             return true;

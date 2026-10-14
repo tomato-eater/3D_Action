@@ -15,6 +15,7 @@ public class AlphaIndividual : PlayableIndividualController
 
     public override bool AutoChange => true;
 
+    [SerializeField] GameObject ImpactObject;
 
     public override void OnHold(bool hold, float holdTime)
     {
@@ -24,5 +25,10 @@ public class AlphaIndividual : PlayableIndividualController
     public override void Release(float holdTime)
     {
         Debug.Log("holdE");
+    }
+
+    public void Impact()
+    {
+        Debug.Log("a");
     }
 }

@@ -49,7 +49,7 @@ public class Player_Move : StateBase
                 return;
             }
             //防御入力検知
-            if (SInputSystem.instance.DefenseButton)
+            if (SInputSystem.Instance.DefenseButton)
             {
                 controller.ChangeState(controller.StateDefense);
                 return;
@@ -57,7 +57,7 @@ public class Player_Move : StateBase
         }
 
         //移動入力
-        var moveValue = SInputSystem.instance.MoveValue;
+        var moveValue = SInputSystem.Instance.MoveValue;
         //カメラの前方ベクトル
         var forward = controller.CameraForward();
 
@@ -70,7 +70,7 @@ public class Player_Move : StateBase
 
         controller.moveVector = (forward * finalInput.y + controller.cameraTrans.right * finalInput.x);
         //最大速度指定　バトル中 || 走り中 ? 走り速度 : 歩き速度
-        var maxSpeed = SGameManager.instance.ActivityMode == ActivityMode.Battle || SInputSystem.instance.RunButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
+        var maxSpeed = SGameManager.instance.ActivityMode == ActivityMode.Battle || SInputSystem.Instance.RunButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
         //入力状況に合わせて最高速度を変える
         maxSpeed = Mathf.Lerp(0, maxSpeed, moveValue.magnitude);
         //徐々に速度を変える

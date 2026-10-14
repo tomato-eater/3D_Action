@@ -14,14 +14,15 @@ public class StatusBase : MonoBehaviour
 
     public float Hp => hp;
 
-    private void Start()
+    protected virtual void Start()
     {
         hp = status.MaxHp;
     }
 
     public virtual void Damage(float damage)
     {
-        hp -= damage;
+        Debug.Log(damage);
+
     }
 
 }

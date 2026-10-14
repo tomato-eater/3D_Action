@@ -5,7 +5,7 @@ public class Weapon : MonoBehaviour
 {
     PlayableIndividualController controller;
 
-    [SerializeField] LayerMask enemyLayer;
+    [SerializeField] LayerMask hitLayer;
 
     [SerializeField, Tooltip("レイを飛ばす基準_外側")] Transform markOutside;
     [SerializeField, Tooltip("レイを飛ばす基準_内側")] Transform markInside;
@@ -68,9 +68,9 @@ public class Weapon : MonoBehaviour
             var faceNormal = Vector3.Cross(moveDir, lengthDir);
             Quaternion boxRotation = Quaternion.LookRotation(faceNormal.normalized, lengthDir.normalized);
 
-            DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, UnityEngine.Color.green);
+            DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, Color.green);
             //判定の取得
-            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, enemyLayer);
+            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, hitLayer);
             bool hitStop = false;
             foreach(var  collider in colliders )
             {
@@ -79,8 +79,8 @@ public class Weapon : MonoBehaviour
 
                 hitStop = true;
                 enemyColl.Add(collider);
-                if(collider.TryGetComponent<StatusBase>(out var target)){
-                    target.Damage(50);
+                if(collider.TryGetComponent<Interface.IDamage>(out var target)){
+                    target.Damage(50, controller.HitStopTime);
                 }
             }
 
@@ -96,7 +96,7 @@ public class Weapon : MonoBehaviour
 
 
     // 当たり判定の確認
-    private void DebugDrawBox(Vector3 center, Vector3 size, Quaternion rotation, UnityEngine.Color color)
+    private void DebugDrawBox(Vector3 center, Vector3 size, Quaternion rotation, Color color)
     {
         Vector3 half = size * 0.5f;
 

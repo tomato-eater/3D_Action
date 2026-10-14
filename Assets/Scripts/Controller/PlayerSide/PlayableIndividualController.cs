@@ -100,6 +100,7 @@ public abstract class PlayableIndividualController : MonoBehaviour
 
 
     [SerializeField] protected float hitStopTime;
+    public float HitStopTime => hitStopTime;
     protected CancellationTokenSource hitStopToken;
 
     /// <summary>

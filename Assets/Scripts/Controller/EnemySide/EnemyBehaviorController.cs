@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Interface;
 
 /// <summary>
 /// 敵のコントローラー
 /// </summary>
-public class EnemyBehaviorController : BehaviorController
+public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
 {
     [Header("Parameter")]
     [SerializeField] Transform eyeTrans;
@@ -83,6 +84,19 @@ public class EnemyBehaviorController : BehaviorController
             }
         }
         return false;
+    }
+
+
+    public void Damage(float damage, float stopTime)
+    {
+        Debug.Log(damage);
+        status.Damage(damage);
+
+    }
+
+    public void BlowAway(float damage)
+    {
+        Debug.Log("吹き飛んだ!");
     }
 
     void Death()
