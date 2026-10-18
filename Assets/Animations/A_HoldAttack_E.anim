@@ -121349,7 +121349,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.96666664
-    functionName: Impact
+    functionName: Slash
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

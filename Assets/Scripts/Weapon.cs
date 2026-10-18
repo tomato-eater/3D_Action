@@ -21,7 +21,7 @@ public class Weapon : MonoBehaviour
 
     bool attack = false;
 
-    List<Collider> enemyColl = new List<Collider>();
+    List<Collider> colls = new List<Collider>();
 
 
     public void Set(PlayableIndividualController i)
@@ -36,7 +36,7 @@ public class Weapon : MonoBehaviour
     public void StartAttack()
     {
         attack = true;
-        enemyColl.Clear();
+        colls.Clear();
 
         beforeOut = markOutside.position;
         beforeIn = markInside.position;
@@ -57,38 +57,38 @@ public class Weapon : MonoBehaviour
         var center = (currentOut + currentIn + beforeOut + beforeIn) * 0.25f;
         //ˆÚ“®ƒxƒNƒgƒ‹
         var moveDir = currentOut - beforeOut;
-        //’·‚³‚ÌƒxƒNƒgƒ‹
+        //’·‚³
         var lengthDir = currentOut - currentIn;
-        
-        if(moveDir.sqrMagnitude > 0.001f && lengthDir.sqrMagnitude > 0.001f)
+
+        //‚ ‚Ü‚è‚É’Z‚¢‚ÆŸ‚É‚¿‰z‚µ
+        if (moveDir.sqrMagnitude <= 0.001f || lengthDir.sqrMagnitude <= 0.001f) return;
+
+        //Box‚Ì’è‹`
+        var boxHalfExtents = new Vector3(moveDir.magnitude * 0.5f, lengthDir.magnitude * 0.5f, 0.05f);
+        //Box‚Ì‰ñ“]
+        var faceNormal = Vector3.Cross(moveDir, lengthDir);
+        Quaternion boxRotation = Quaternion.LookRotation(faceNormal.normalized, lengthDir.normalized);
+
+        DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, Color.green);
+        //”»’è‚Ìæ“¾
+        Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, hitLayer);
+        bool hitStop = false;
+        foreach (var collider in colliders) 
         {
-            //Box‚Ì’è‹`
-            var boxHalfExtents = new Vector3(moveDir.magnitude * 0.5f, lengthDir.magnitude * 0.5f, 0.05f);
-            //Box‚Ì‰ñ“]
-            var faceNormal = Vector3.Cross(moveDir, lengthDir);
-            Quaternion boxRotation = Quaternion.LookRotation(faceNormal.normalized, lengthDir.normalized);
+            //Šù‚É”»’è‚ğæ“¾‚µ‚Ä‚¢‚ê‚Î”ò‚Î‚·
+            if (colls.Contains(collider)) continue;
 
-            DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, Color.green);
-            //”»’è‚Ìæ“¾
-            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, hitLayer);
-            bool hitStop = false;
-            foreach(var  collider in colliders )
+            hitStop = true;
+            colls.Add(collider);
+            if (collider.TryGetComponent<Interface.IDamage>(out var target)) 
             {
-                //Šù‚É”»’è‚ğæ“¾‚µ‚Ä‚¢‚ê‚Î”ò‚Î‚·
-                if(enemyColl.Contains(collider)) continue;
-
-                hitStop = true;
-                enemyColl.Add(collider);
-                if(collider.TryGetComponent<Interface.IDamage>(out var target)){
-                    target.Damage(50, controller.HitStopTime);
-                }
+                target.Damage(50, controller.HitStopTime);
             }
-
-            //UŒ‚‚ª“–‚½‚Á‚Ä‚¢‚ê‚ÎPlayHitStop
-            if (hitStop)
-                controller.HitStop();
         }
 
+        //UŒ‚‚ª“–‚½‚Á‚Ä‚¢‚ê‚ÎPlayHitStop
+        if (hitStop) controller.HitStop();
+        
         beforeOut = currentOut;
         beforeIn = currentIn;
     }

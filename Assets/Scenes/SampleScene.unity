@@ -877,55 +877,6 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 7869543608362826461, guid: 9bd72731ebe2248478ba4849c274a43b, type: 3}
   m_PrefabInstance: {fileID: 1100003976}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &699531540
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 699531541}
-  - component: {fileID: 699531542}
-  m_Layer: 0
-  m_Name: ImpactObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &699531541
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 699531540}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &699531542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 699531540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8830232e67cf7f9458d0b551d2a094a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Impact
-  radius: 5
-  angle: 35
-  mask:
-    serializedVersion: 2
-    m_Bits: 2176
 --- !u!4 &774153455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1773850232497182754, guid: 9bd72731ebe2248478ba4849c274a43b, type: 3}
@@ -2015,7 +1966,7 @@ MonoBehaviour:
   weaponHolder:
   - {fileID: 774153455}
   hitStopTime: 0.07
-  ImpactObject: {fileID: 0}
+  SlashObject: {fileID: 8521457502521676055, guid: 6e2764442e87ead4ebcc2c0719ddb05a, type: 3}
 --- !u!1 &1847924262 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7515587546222981938, guid: d4c0d7159c5a44b4c9e0b1bb6c221fe1, type: 3}
@@ -2432,4 +2383,3 @@ SceneRoots:
   - {fileID: 536925645}
   - {fileID: 2088852296}
   - {fileID: 861311903}
-  - {fileID: 699531541}

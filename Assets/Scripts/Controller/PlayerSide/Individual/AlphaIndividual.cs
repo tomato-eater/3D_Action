@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -15,7 +16,9 @@ public class AlphaIndividual : PlayableIndividualController
 
     public override bool AutoChange => true;
 
-    [SerializeField] GameObject ImpactObject;
+    [SerializeField] GameObject SlashObject;
+
+    List<GameObject> slashObjects = new List<GameObject>();
 
     public override void OnHold(bool hold, float holdTime)
     {
@@ -27,8 +30,26 @@ public class AlphaIndividual : PlayableIndividualController
         Debug.Log("holdE");
     }
 
-    public void Impact()
+    /// <summary>
+    /// アニメーターで呼び出し
+    /// </summary>
+    public void Slash()
     {
-        Debug.Log("a");
+        for (int i = 0; i < slashObjects.Count; i++)
+        {
+            if (slashObjects[i].activeSelf) continue;
+
+            slashObjects[i].transform.position = transform.position;
+            slashObjects[i].transform.rotation = controller.transform.rotation;
+            slashObjects[i].SetActive(true);
+            return;
+        }
+
+        var slash = Instantiate(SlashObject, transform.position, Quaternion.identity);
+        slash.transform.rotation = controller.transform.rotation;
+        if (slash.TryGetComponent<Shockwave>(out var shockwave))
+            shockwave.Set(controller);
+
+        slashObjects.Add(slash);
     }
 }
