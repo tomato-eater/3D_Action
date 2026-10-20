@@ -103,7 +103,7 @@ public class PlayableBehaviorController : BehaviorController
             return true;
         }
         //長押し
-        else if(SInputSystem.Instance.HoldAttack)
+        else if(SInputSystem.Instance.HoldAttack && IsGround())
         {
             if (Individual.MaxCharge <= 0)
                 ChangeState(StateHoldAttackE);
@@ -187,13 +187,13 @@ public class PlayableBehaviorController : BehaviorController
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("攻撃をくらった(インターフェースに書き換える)");
         if (StateAvoid.judgeJustAvoid <= CharData.JudgeAvoidPercent)
         {
             StartSlow();
         }
         else
         {
-            Debug.Log("hit");
         }
     }
 

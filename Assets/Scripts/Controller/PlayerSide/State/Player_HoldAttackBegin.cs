@@ -12,15 +12,29 @@ public class Player_HoldAttackBegin : StateBase
 
     public override void Start()
     {
-        Debug.Log("今じゃない");
-
-
+        controller.moveVector = Vector3.zero;
         controller.Individual.OnHold(true, chargeValue);
 
     }
 
     public override void Update()
     {
+
+        if (controller.target)
+        {
+            //自分の座標
+            var myPos = controller.AttackPoint.position;
+            //目的地(ターゲットの座標)の座標
+            var enemyPos = controller.target.transform.position;
+            //自身からターゲットの方向のベクトル
+            var adjustment = Vector3.Scale(enemyPos - myPos, new Vector3(1, 0, 1)).normalized;
+
+            //回転方向計算
+            var moveVector = (enemyPos - myPos).normalized;
+
+            controller.MoveAndRotate(moveVector, 2.5f);
+        }
+
         chargeValue += Time.unscaledDeltaTime;
 
         controller.Individual.OnHold(false, chargeValue);

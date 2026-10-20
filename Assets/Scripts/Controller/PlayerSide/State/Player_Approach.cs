@@ -50,13 +50,14 @@ public class Player_Approach : StateBase
             enemyPos -= adjustment * controller.target.Radius;
 
             //十分に近いか
-            var dis = Vector3.Distance(myPos, enemyPos) <= controller.Individual.AttackDistance;
+            bool dis = Vector3.Distance(myPos, enemyPos) <= controller.Individual.AttackDistance;
 
             //移動・回転方向計算
             var moveVector = (enemyPos - myPos).normalized * controller.CharData.ApproachSpeed;
 
-            if (!dis) controller.moveVector = moveVector;
-            else controller.moveVector = Vector3.zero;
+            //移動の必要が．．．
+            if (!dis) controller.moveVector = moveVector;   //ある
+            else controller.moveVector = Vector3.zero;      //ない
 
             controller.MoveAndRotate(moveVector, 2.5f);
 
