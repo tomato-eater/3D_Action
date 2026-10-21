@@ -1,0 +1,60 @@
+using UnityEngine;
+
+namespace Player
+{
+    /// <summary>
+    /// Playeróéâ∫
+    /// </summary>
+    public class Fall : State
+    {
+        public Fall(PlayerController controller) : base(controller) { }
+
+        public override void Start()
+        {
+            controller.Action.Animator.SetTrigger("Fall");
+        }
+
+        public override void Update()
+        {
+            //çUåÇì¸óÕåüím
+            if (controller.Attack(out var comboAdd))
+            {
+                return;
+            }
+
+            //à⁄ìÆ
+            var moveValue = SInputSystem.Instance.MoveValue;
+            if (moveValue != Vector2.zero)
+            {
+                var forward = controller.CameraForward();
+                forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.AirSpeed;
+                controller.moveVector.x = forward.x;
+                controller.moveVector.z = forward.z;
+            }
+
+            //â∫ç~ó ÇÃåvéZ
+            controller.moveVector.y += controller.CharData.GravityValue * controller.ElapsedTime();
+            //óéâ∫ë¨ìxÇÃí≤êﬂ
+            if (controller.moveVector.y < controller.CharData.MaxFallSpeed)
+                controller.moveVector.y = controller.CharData.MaxFallSpeed;
+
+            //à⁄ìÆÇ∆âÒì]
+            controller.MoveAndRotate(controller.moveVector);
+
+            var moveSpeed = new Vector3(controller.Controller.velocity.x, 0, controller.Controller.velocity.z).magnitude;
+            controller.Action.Animator.SetFloat("MoveVelocity", moveSpeed);
+
+            //íÖínîªíË
+            if (controller.Controller.isGrounded)
+            {
+                controller.ChangeState(moveSpeed == 0 ? controller.Idle : controller.Move);
+            }
+        }
+
+        public override void End()
+        {
+            controller.Action.Animator.SetTrigger("Land");
+        }
+    }
+}
+

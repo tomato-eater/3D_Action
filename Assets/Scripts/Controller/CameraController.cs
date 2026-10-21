@@ -44,7 +44,7 @@ public class CameraController : MonoBehaviour
     Vector2 targetLimitY;
 
     [Header("Refer"), Tooltip("プレイヤーコントローラー")]
-    [SerializeField] PlayableBehaviorController player;
+    [SerializeField] Player.PlayerController player;
 
     Transform MyTransform;
     float yaw;  //横軸

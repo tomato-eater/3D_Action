@@ -1,0 +1,54 @@
+using UnityEngine;
+
+namespace Enemy
+{
+    /// <summary>
+    /// Enemy発見
+    /// </summary>
+    public class Discovery : EnemyState
+    {
+        public Discovery(EnemyBehaviorController controller) : base(controller) { }
+
+        /// <summary>
+        /// 仮の変数
+        /// </summary>
+        float timer = 0;
+
+        public override void Start()
+        {
+            Debug.Log("ハッケン");
+
+            controller.Agent.isStopped = true;
+            controller.Area.BattleStart();
+
+            timer = 0;
+        }
+
+        public override void Update()
+        {
+            ////指定したアニメーションが再生されているかの確認
+            //if (!controller.animator.GetCurrentAnimatorStateInfo(0).IsName(アニメーションの名前))
+            //{
+            //    return;
+            //}
+            ////指定したアニメーションが指定した割合まで再生されたか
+            //if(controller.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            //{
+            //    controller.ChangeState()
+            //}
+
+            ///------仮の処理
+            timer += Time.deltaTime;
+            if (timer > 1)
+            {
+
+            }
+        }
+
+        public override void End()
+        {
+            controller.Agent.isStopped = false;
+
+        }
+    }
+}

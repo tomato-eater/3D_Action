@@ -1,11 +1,20 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Enemy;
 using Interface;
+
+/// <summary>
+/// EnemyのStateBase
+/// </summary>
+public abstract class EnemyState : StateBase<EnemyBehaviorController>
+{
+    protected EnemyState(EnemyBehaviorController controller) : base(controller) { }
+}
 
 /// <summary>
 /// 敵のコントローラー
 /// </summary>
-public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
+public class EnemyBehaviorController : BehaviorControllerBase<EnemyBehaviorController, EnemyState>, IDamage, IBlowAway
 {
     [Header("Parameter")]
     [SerializeField] Transform eyeTrans;
@@ -23,11 +32,16 @@ public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
     [Header("Component")]
     [SerializeField] NavMeshAgent agent;
 
+    /// <summary> アイドル </summary>
+    public Idle Idle { get; private set; }
+    /// <summary> 徘徊 </summary>
+    public Loiter Loiter {  get; private set; }
 
-    public Enemy_Idle StateIdle { get; private set; }
-    public Enemy_Loiter StateLoiter {  get; private set; }
-    public Enemy_Discovery StateDiscovery { get; private set; }
-    public Enemy_Death StateDeath { get; private set; }
+    /// <summary> 発見 </summary>
+    public Discovery Discovery { get; private set; }
+
+    /// <summary> 死亡 </summary>
+    public Death Death { get; private set; }
 
 
     public Transform MyTransform { get; private set; }
@@ -46,18 +60,16 @@ public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
         if (!battleArea) MyTransform.parent.TryGetComponent<BattleArea>(out battleArea);
         if(!agent) MyTransform.TryGetComponent<NavMeshAgent>(out agent);
 
-        StateIdle = new Enemy_Idle(this);
-        StateLoiter = new Enemy_Loiter(this);
-        StateDiscovery = new Enemy_Discovery(this);
-        StateDeath = new Enemy_Death(this);
+        Idle = new Idle(this);
+        Loiter = new Loiter(this);
+        Discovery = new Discovery(this);
+        Death = new Death(this);
 
-        ChangeState(StateIdle);
+        ChangeState(Idle);
     }
 
     private void Update()
     {
-        if (status.Hp <= 0 && state != StateDeath) Death();
-
         state?.Update();
     }
 
@@ -79,7 +91,7 @@ public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
             //範囲内なら
             if (eAngle < angle * 0.5f)
             {
-                ChangeState(StateDiscovery);
+                ChangeState(Discovery);
                 return true;
             }
         }
@@ -99,11 +111,14 @@ public class EnemyBehaviorController : BehaviorController, IDamage, IBlowAway
         Debug.Log("吹き飛んだ!");
     }
 
-    void Death()
+    /// <summary>
+    /// 死に移行
+    /// </summary>
+    void Dead()
     {
         agent.enabled = false;
 
-        ChangeState(StateDeath);
+        ChangeState(Death);
     }
 
     /// <summary>

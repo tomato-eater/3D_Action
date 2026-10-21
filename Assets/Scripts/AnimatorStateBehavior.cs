@@ -1,9 +1,9 @@
+using Playable;
 using UnityEngine;
 
 public class AnimatorStateBehavior : StateMachineBehaviour
 {
     bool trigger = false;
-
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -13,13 +13,13 @@ public class AnimatorStateBehavior : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(trigger && stateInfo.normalizedTime >= 0.9f)
+        if (trigger && stateInfo.normalizedTime >= 0.9f)
         {
             trigger = false;
 
-            if (animator.TryGetComponent<PlayableIndividualController>(out var controller))
+            if (animator.TryGetComponent<ActionController>(out var controller))
             {
-                controller.SetEndAnimator();
+                controller.SetTransferAnime();
             }
         }
     }
