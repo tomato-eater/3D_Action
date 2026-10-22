@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Player;
+using Playable.Player;
 
 namespace Playable
 {
@@ -32,7 +32,7 @@ namespace Playable
         [SerializeField] float lifeTime;
 
         /// <summary>
-        /// 自分のコントローラー
+        /// 自分のコントローラー　
         /// </summary>
         PlayerController controller;
         /// <summary>
@@ -61,6 +61,8 @@ namespace Playable
         {
             //経過時間
             var time = controller.ElapsedTime();
+            Debug.Log("npcを追加する場合、ここが問題になる");
+
             //前方に直進
             transform.Translate(Vector3.forward * speed * time);
             timer += time;

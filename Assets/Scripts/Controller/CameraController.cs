@@ -1,6 +1,4 @@
 using UnityEngine;
-using static UnityEditor.SceneView;
-using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// カメラ制御
@@ -44,7 +42,7 @@ public class CameraController : MonoBehaviour
     Vector2 targetLimitY;
 
     [Header("Refer"), Tooltip("プレイヤーコントローラー")]
-    [SerializeField] Player.PlayerController player;
+    [SerializeField] Playable.Player.PlayerController player;
 
     Transform MyTransform;
     float yaw;  //横軸

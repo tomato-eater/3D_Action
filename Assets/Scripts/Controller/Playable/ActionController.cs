@@ -9,17 +9,17 @@ namespace Playable
     public class ActionController : MonoBehaviour
     {
         [Header("Parameter")]
-        [SerializeField, Tooltip("武器データ(今はプレハブを直指定)")] protected GameObject weaponData;
+        [SerializeField, Tooltip("武器データ(今はプレハブを直指定)")] GameObject weaponData;
 
         [Header("Refer")]
-        [SerializeField, Tooltip("AttackPoint")] protected Transform attackPoint;
-        [SerializeField, Tooltip("行いたい挙動")] protected List<ActionBase> actions = new List<ActionBase>();
-        [SerializeField, Tooltip("武器の位置")] protected List<Transform> weaponHolders = new List<Transform>();
-        [Tooltip("装備中の武器")] protected List<GameObject> equippedWeapons = new List<GameObject>();
-        [Tooltip("装備中の武器のアクセス先")] protected List<Weapon> weaponAccess = new List<Weapon>();
+        [SerializeField, Tooltip("AttackPoint")] Transform attackPoint;
+        [SerializeField, Tooltip("行いたい挙動")] List<ActionBase> actions = new List<ActionBase>();
+        [SerializeField, Tooltip("武器の位置")] List<Transform> weaponHolders = new List<Transform>();
+        [Tooltip("装備中の武器")] List<GameObject> equippedWeapons = new List<GameObject>();
+        [Tooltip("装備中の武器のアクセス先")] List<Weapon> weaponAccess = new List<Weapon>();
 
         [Header("Component")]
-        [SerializeField] protected Animator animator;
+        [SerializeField] Animator animator;
 
         /// <summary>
         /// 読み取り専用　攻撃の基準点
@@ -62,6 +62,12 @@ namespace Playable
             }
         }
 
+        private void Start()
+        {
+            foreach (var action in actions)
+                action.Set(animator);
+        }
+
         /// <summary>
         /// 装備の切り替え
         /// </summary>
@@ -90,28 +96,36 @@ namespace Playable
         }
 
         /// <summary>
-        /// 攻撃の有効化(アニメーション管理)
+        /// 攻撃の有効化(アニメーションで呼び出し)
         /// </summary>
         /// <param name="no">武器番号</param>
-        public void OnAttack(int no)
+        public void OnWeapon(int no)
         {
-            var mode = Mode;
-            if (mode == null) return;
+            var weapon = weaponAccess[no];
+            if (weapon == null) return;
 
-            mode.TapAttackS(weaponAccess[no]);
-            
+            weapon.StartAttack();
         }
         /// <summary>
-        /// 攻撃の無効化(アニメーション管理)
+        /// 攻撃の無効化(アニメーションで呼び出し)
         /// </summary>
         /// <param name="no">武器番号</param>
-        public void OffAttack(int no)
+        public void OffWeapon(int no)
+        {
+            var weapon = weaponAccess[no];
+            if (weapon == null) return;
+
+            weapon.EndAttack();
+        }
+        /// <summary>
+        /// ホールド攻撃(アニメーションで呼び出し)
+        /// </summary>
+        public void HoldAttack()
         {
             var mode = Mode;
             if (mode == null) return;
 
-            mode.TapAttackE(weaponAccess[no]);
-            
+            mode.ReleaseAttack();
         }
     }
 }

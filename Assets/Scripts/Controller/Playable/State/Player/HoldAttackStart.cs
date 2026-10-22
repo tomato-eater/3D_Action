@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// Player長押し攻撃開始
@@ -12,8 +12,14 @@ namespace Player
 
         public override void Start()
         {
+            //ホールドが不要なら移行
+            if (controller.Action.Mode.HoldAttack())
+            {
+                controller.ChangeState(controller.HoldAttackE);
+                return;
+            }
+
             controller.moveVector = Vector3.zero;
-            controller.Action.Mode.HoldAttack(0);
         }
 
         public override void Update()

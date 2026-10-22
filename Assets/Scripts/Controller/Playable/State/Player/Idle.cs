@@ -1,7 +1,6 @@
 using UnityEngine;
-using Playable;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// PlayerƒAƒCƒhƒ‹

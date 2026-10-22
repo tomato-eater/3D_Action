@@ -1,7 +1,6 @@
 using UnityEngine;
-using Playable;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// PlayerのStateBase
@@ -121,19 +120,13 @@ namespace Player
             if (SInputSystem.Instance.TapAttackTrigger)
             {
                 comboAdd = true;
-                if (Action.Mode.AttackDistance != 0)
-                    ChangeState(Approach);
-                else
-                    ChangeState(TapAttack);
+                ChangeState(Approach);
                 return true;
             }
             //長押し
             else if (SInputSystem.Instance.HoldAttack && IsGround())
             {
-                if (Action.Mode.MaxCharge <= 0)
-                    ChangeState(HoldAttackE);
-                else
-                    ChangeState(HoldAttackB);
+                ChangeState(HoldAttackB);
                 return true;
             }
 

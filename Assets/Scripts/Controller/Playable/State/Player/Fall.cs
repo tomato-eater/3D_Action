@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// Player—Ž‰º

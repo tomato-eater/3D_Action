@@ -8,7 +8,21 @@ namespace Playable
     public abstract class ActionBase : MonoBehaviour
     {
         /// <summary>
-        /// 通常攻撃時のコンボ数
+        /// アニメーター
+        /// </summary>
+        Animator animator;
+        /// <summary>
+        /// アニメーターの登録
+        /// </summary>
+        /// <param name="animator">アニメーター</param>
+        public void Set(Animator animator) => this.animator = animator;
+        /// <summary>
+        /// 読み取り専用　アニメーター
+        /// </summary>
+        protected Animator MyAnimator => animator;
+
+        /// <summary>
+        /// 通常攻撃の最大コンボ数
         /// </summary>
         public abstract int MaxCombo {  get; }
         /// <summary>
@@ -16,26 +30,39 @@ namespace Playable
         /// </summary>
         public abstract float AttackDistance { get; }
         /// <summary>
-        /// チャージ出来る最大時間
+        /// ホールド出来る最大時間
         /// </summary>
-        public abstract float MaxCharge { get; }
+        public abstract float MaxHoldTime { get; }
         /// <summary>
-        /// チャージ中動けるか
+        /// ホールド中動けるか
         /// </summary>
         public abstract bool ChargeMove { get; }
 
-        protected float chargeTime;
+        /// <summary>
+        /// ホールド攻撃のホールドした時間
+        /// </summary>
+        protected float chargeAttackTime = 0;
+        /// <summary>
+        /// ホールドスキルのホールドした時間
+        /// </summary>
+        protected float chargeSkillTime = 0;
+
 
         /// <summary>
-        /// 単押し攻撃:開始
+        /// 接近開始
         /// </summary>
-        /// <param name="weapon">武器にアクセス</param>
-        public abstract void TapAttackS(Weapon weapon = null);
+        public virtual void Approach()
+        {
+            MyAnimator.SetTrigger("Approach");
+        }
+
         /// <summary>
-        /// 単押し攻撃:終了
+        /// 単押し攻撃
         /// </summary>
-        /// <param name="weapon">武器にアクセス</param>
-        public abstract void TapAttackE(Weapon weapon = null);
+        public virtual void TapAttack()
+        {
+            MyAnimator.SetTrigger("TapAttack");
+        }
 
 
         /// <summary>
@@ -43,14 +70,21 @@ namespace Playable
         /// </summary>
         /// <param name="time">押してる時間</param>
         /// <returns>チャージしきったら ? 切り替える : 切り替えない</returns>
-        public abstract bool HoldAttack(float time);
+        public abstract bool HoldAttack(float time = 0);
         /// <summary>
-        /// 離した(アニメーターで制御)
+        /// 攻撃を離した後の処理
         /// </summary>
         public abstract void ReleaseAttack();
 
 
-        public abstract void Skill();
+        /// <summary>
+        /// スキルを押してる時の処理
+        /// </summary>
+        /// <param name="time">押してる時間</param>
+        public abstract void HoldSkill(float time);
+        /// <summary>
+        /// スキルを離した後の処理
+        /// </summary>
+        public abstract void ReleaseSkill();
     }
 }
-

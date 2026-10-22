@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// Player単押し攻撃
@@ -30,7 +30,8 @@ namespace Player
 
             controller.MoveAndRotate(rot, 1.5f);
 
-            controller.Action.Animator.SetTrigger("TapAttack");
+            controller.Action.Mode.TapAttack();
+
             combo++;
             endAni = false;
             time = 0;
@@ -66,7 +67,9 @@ namespace Player
                 }
                 if (time > 0.15f)
                 {
+                    //攻撃入力状況をリセット
                     bool tapAttackTrigger = SInputSystem.Instance.TapAttackTrigger;
+
                     combo = 0;
                     controller.Action.Animator.SetTrigger("EndAttack");
                     controller.ChangeState(controller.Idle);

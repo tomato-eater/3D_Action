@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// PlayerÚ‹ß
@@ -16,7 +16,14 @@ namespace Player
 
         public override void Start()
         {
-            controller.Action.Animator.SetTrigger("Approach");
+            //Ú‹ß‚Ì•K—v‚ª–³‚¯‚ê‚ÎUŒ‚‚ÉˆÚs
+            if(controller.Action.Mode.AttackDistance <= 0)
+            {
+                controller.ChangeState(controller.TapAttack);
+                return;
+            }
+
+            controller.Action.Mode.Approach();
 
             startPos = controller.MyTransform.position;
             endAni = false;

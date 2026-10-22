@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Player
+namespace Playable.Player
 {
     /// <summary>
     /// Playerí∑âüÇµçUåÇèIóπ
@@ -14,7 +14,7 @@ namespace Player
 
         public override void Start()
         {
-            controller.Action.Animator.SetTrigger("HoldAttackE");
+            controller.Action.Mode.ReleaseAttack();
             endAni = false;
             controller.moveVector = Vector3.zero;
         }
