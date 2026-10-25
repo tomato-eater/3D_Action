@@ -8,66 +8,75 @@ using UnityEngine.InputSystem.Interactions;
 [RequireComponent(typeof(PlayerInput))]
 public class SInputSystem : MonoBehaviour
 {
-    public static SInputSystem Instance{ get; private set; }
+    public static SInputSystem Instance { get; private set; }
+    //プレイヤーインプット
+    PlayerInput _playerInput;
 
-    PlayerInput playerInput;
+    //移動入力アクション
+    InputAction _moveAction;
+    //カメラ入力アクション
+    InputAction _lookAction;
 
-    InputAction moveAction;
-    InputAction lookAction;
+    //ジャンプアクション
+    InputAction _jumpAction;
 
-    InputAction jumpAction;
+    //ロックオンアクション
+    InputAction _targetAction;
+    //ロックオン切り替え(個体)アクション
+    InputAction _targetTAction;
+    //ロックオン切り替え(部位)アクション
+    InputAction _targetPAction;
 
-    InputAction targetAction;
-    InputAction targetTAction;
-    InputAction targetPAction;
+    //防御アクション
+    InputAction _defenseAction;
+    //走りアクション
+    InputAction _runAction;
 
-    InputAction defenseAction;
-
-    InputAction runAction;
 
     /// <summary> 攻撃入力の受付状態 </summary>
-    bool eventActive = false;
+    bool _eventActive = false;
+
 
     /// <summary>
     /// 移動入力
     /// </summary>
-    public Vector2 MoveValue => moveAction.ReadValue<Vector2>();
+    public Vector2 MoveValue => _moveAction.ReadValue<Vector2>();
     /// <summary>
     /// カメラ入力
     /// </summary>
-    public Vector2 CameraMove => lookAction.ReadValue<Vector2>();
+    public Vector2 CameraMove => _lookAction.ReadValue<Vector2>();
 
     /// <summary>
     /// ジャンプ入力した
     /// </summary>
-    public bool JumpTrigger => jumpAction.triggered;
+    public bool JumpTrigger => _jumpAction.triggered;
     /// <summary>
     /// ジャンプ入力中
     /// </summary>
-    public bool JumpPress => jumpAction.IsPressed();
+    public bool JumpPress => _jumpAction.IsPressed();
 
     /// <summary>
     /// ロックオン・オフ変更
     /// </summary>
-    public bool TargetTrigger => targetAction.triggered;
+    public bool TargetTrigger => _targetAction.triggered;
     /// <summary>
     /// ロックオン対象変更
     /// </summary>
-    public bool ChangeTriggerT => targetTAction.triggered;
+    public bool ChangeTriggerT => _targetTAction.triggered;
     /// <summary>
     /// ロックオン場所変更
     /// </summary>
-    public bool ChangeTriggerP => targetPAction.triggered;
+    public bool ChangeTriggerP => _targetPAction.triggered;
 
     /// <summary>
     /// 防御入力中
     /// </summary>
-    public bool DefenseButton => defenseAction.IsPressed();
-    
+    public bool DefenseButton => _defenseAction.IsPressed();
+
     /// <summary>
     /// 走り入力中
     /// </summary>
-    public bool RunButton => runAction.IsPressed();
+    public bool RunButton => _runAction.IsPressed();
 
 
 
@@ -82,16 +91,16 @@ public class SInputSystem : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        TryGetComponent<PlayerInput>(out playerInput);
+        TryGetComponent<PlayerInput>(out _playerInput);
 
-        moveAction     = playerInput.actions["Move"];
-        lookAction     = playerInput.actions["Look"];
-        jumpAction     = playerInput.actions["Jump"];
-        targetAction   = playerInput.actions["TargetTrigger"];
-        targetTAction  = playerInput.actions["ChangeTarget"];
-        targetPAction  = playerInput.actions["ChangePoint"];
-        defenseAction  = playerInput.actions["Defense"];
-        runAction      = playerInput.actions["Run"];
+        _moveAction = _playerInput.actions["Move"];
+        _lookAction = _playerInput.actions["Look"];
+        _jumpAction = _playerInput.actions["Jump"];
+        _targetAction = _playerInput.actions["TargetTrigger"];
+        _targetTAction = _playerInput.actions["ChangeTarget"];
+        _targetPAction = _playerInput.actions["ChangePoint"];
+        _defenseAction = _playerInput.actions["Defense"];
+        _runAction = _playerInput.actions["Run"];
 
         SwitchMap("Player");
     }
@@ -100,7 +109,7 @@ public class SInputSystem : MonoBehaviour
     {
         Instance = null;
     }
-    
+
 
     /// <summary>
     /// マップの切り替え
@@ -108,56 +117,74 @@ public class SInputSystem : MonoBehaviour
     /// <param name="map">切り替え先</param>
     void SwitchMap(string map)
     {
-        playerInput.SwitchCurrentActionMap(map);
+        _playerInput.SwitchCurrentActionMap(map);
 
-        var attackAction = playerInput.actions["Attack"];
-        var voidAction = playerInput.actions["Avoid"];
+        var attackAction = _playerInput.actions["Attack"];
+        var voidAction = _playerInput.actions["Avoid"];
+        var unique = _playerInput.actions["Unique"];
         if (map == "Player")
         {
-            if (!eventActive)
+            if (!_eventActive)
             {
-                eventActive = true;
+                _eventActive = true;
                 attackAction.performed += OnAttackPerform;
                 attackAction.canceled += OnAttackCancel;
+
                 voidAction.performed += OnAvoidTap;
+
+                unique.performed += OnUniquePerform;
+                unique.canceled += OnUniqueCancel;
             }
             else
             {
-                eventActive = false;
+                _eventActive = false;
                 attackAction.performed -= OnAttackPerform;
                 attackAction.canceled -= OnAttackCancel;
+
                 voidAction.performed -= OnAvoidTap;
 
+                unique.performed -= OnUniquePerform;
+                unique.canceled -= OnUniqueCancel;
             }
         }
     }
 
 
-    //----------------------------------------------Attack--Avoid
+    //----------------------------------------------Attack--Avoid--Skill
+
+
 
     /// <summary> 攻撃タップトリガー状況 </summary>
-    bool tapAttackTrigger = false;
+    bool _tapAttackTrigger = false;
+    /// <summary> 攻撃ホールド状況 </summary>
+    bool _holdAttack = false;
+    /// <summary> 回避発動トリガー </summary>
+    bool _tapAvoidTrigger = false;
+    /// <summary>
+    /// 固有技発動トリガー
+    /// </summary>
+    bool _uniqueTrigger = false;
+
     /// <summary> 攻撃タップトリガー状況取得 </summary>
     public bool TapAttackTrigger
     {
         get
         {
-            if (tapAttackTrigger)
+            if (_tapAttackTrigger)
             {
-                tapAttackTrigger = false;
+                _tapAttackTrigger = false;
                 return true;
             }
             return false;
         }
     }
-    /// <summary> 攻撃ホールド状況 </summary>
-    bool holdAttack = false;
+   
     /// <summary> 攻撃ホールド状況取得 </summary>
     public bool HoldAttack
     {
         get
         {
-            if (holdAttack && !DerivedAttackTrigger)
+            if (_holdAttack && !DerivedAttackTrigger)
             {
                 DerivedAttackTrigger = true;
                 return true;
@@ -170,16 +197,15 @@ public class SInputSystem : MonoBehaviour
 
     /// <summary> 回避受付状態 </summary>
     bool avoidReception = true;
-    /// <summary> 回避トリガー </summary>
-    bool tapAvoidTrigger = false;
-    /// <summary> 回避トリガー状況取得 </summary>
+    
+    /// <summary> 回避発動トリガー状況取得 </summary>
     public bool TapAvoidTrigger
     {
         get
         {
-            if (tapAvoidTrigger)
+            if (_tapAvoidTrigger)
             {
-                tapAvoidTrigger = false;
+                _tapAvoidTrigger = false;
                 return true;
             }
             return false;
@@ -195,38 +221,86 @@ public class SInputSystem : MonoBehaviour
     {
         if (SGameManager.instance.ActivityMode != ActivityMode.Battle || !avoidReception) return;
 
-        tapAttackTrigger = false;
-        holdAttack = false;
+        _tapAttackTrigger = false;
+        _holdAttack = false;
+        _uniqueTrigger = false;
+
         if (context.interaction is TapInteraction)
         {
-            tapAvoidTrigger = true;
+            _tapAvoidTrigger = true;
         }
     }
-    
+
     /// <summary> 攻撃入力　押した時 </summary>
     /// <param name="context"></param>
     void OnAttackPerform(InputAction.CallbackContext context)
     {
-        tapAvoidTrigger = false;
-        if(context.interaction is TapInteraction)
+        _tapAvoidTrigger = false;
+        _uniqueTrigger = false;
+
+        if (context.interaction is TapInteraction)
         {
-            tapAttackTrigger = true;
+            _tapAttackTrigger = true;
         }
         else
         {
-            holdAttack = true;
+            _holdAttack = true;
         }
     }
     /// <summary> 攻撃入力　離した時 </summary>
     /// <param name="context"></param>
     void OnAttackCancel(InputAction.CallbackContext context)
     {
-        if(context.interaction is HoldInteraction)
+        if (context.interaction is HoldInteraction)
         {
-            holdAttack = false;
+            _holdAttack = false;
             DerivedAttackTrigger = false;
         }
     }
 
+    /// <summary>
+    /// 固有技発動トリガー状況取得
+    /// </summary>
+    public bool UniqueTrigger
+    {
+        get
+        {
+            if (_uniqueTrigger)
+            {
+                _uniqueTrigger = false;
+                return true;
+            }
+            return false;
+        }
+    }
 
+    /// <summary>
+    /// 固有技入力解除状況取得
+    /// </summary>
+    public bool UniqueCancel { get; private set; } = true;
+
+    /// <summary>
+    /// 固有技入力
+    /// </summary>
+    /// <param name="context"></param>
+    void OnUniquePerform(InputAction.CallbackContext context)
+    {
+        //ボタンが離されていない状況で押下したら
+        if (!UniqueCancel) return;
+
+        _tapAvoidTrigger = false;
+        _tapAttackTrigger = false;
+        _holdAttack = false;
+
+        _uniqueTrigger = true;
+        UniqueCancel = false;
+    }
+    /// <summary>
+    /// 固有技解除
+    /// </summary>
+    /// <param name="context"></param>
+    void OnUniqueCancel(InputAction.CallbackContext context)
+    {
+        UniqueCancel = true;
+    }
 }

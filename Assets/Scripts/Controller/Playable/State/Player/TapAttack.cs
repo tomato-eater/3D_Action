@@ -17,20 +17,20 @@ namespace Playable.Player
 
         public override void Start()
         {
-            if (combo >= controller.Action.Mode.MaxCombo)
+            if (combo >= _controller.Action.Mode.MaxCombo)
             {
                 combo = 0;
-                controller.ChangeState(controller.Idle);
+                _controller.ChangeState(_controller.Idle);
                 return;
             }
 
 
-            controller.moveVector = Vector3.zero;
-            Vector3 rot = controller.target ? controller.target.transform.position - controller.MyTransform.position : Vector3.zero;
+            _controller.MoveVector = Vector3.zero;
+            Vector3 rot = _controller.target ? _controller.target.transform.position - _controller.MyTransform.position : Vector3.zero;
 
-            controller.MoveAndRotate(rot, 1.5f);
+            _controller.MoveAndRotate(rot, 1.5f);
 
-            controller.Action.Mode.TapAttack();
+            _controller.Action.Mode.TapAttack();
 
             combo++;
             endAni = false;
@@ -40,23 +40,23 @@ namespace Playable.Player
         public override void Update()
         {
             if (!endAni)
-                endAni = controller.Action.GetTransferAnime;
+                endAni = _controller.Action.GetTransferAnime;
 
             if (endAni)
             {
-                time += controller.ElapsedTime();
+                time += _controller.ElapsedTime();
                 if (time > 0.1f)
                 {
                     //回避入力検知
-                    if (SGameManager.instance.ActivityMode == ActivityMode.Battle && controller.ChangeAvoid())
+                    if (SGameManager.instance.ActivityMode == ActivityMode.Battle && _controller.ChangeAvoid())
                     {
                         combo = 0;
-                        controller.Action.Animator.SetTrigger("EndAttack");
+                        _controller.Action.MyAnimator.SetTrigger("EndAttack");
                         return;
                     }
 
                     //攻撃入力検知
-                    if (combo < controller.Action.Mode.MaxCombo && controller.Attack(out var comboAdd))
+                    if (combo < _controller.Action.Mode.MaxCombo && _controller.NextAction(out var comboAdd))
                     {
                         if (!comboAdd)
                         {
@@ -68,11 +68,11 @@ namespace Playable.Player
                 if (time > 0.15f)
                 {
                     //攻撃入力状況をリセット
-                    bool tapAttackTrigger = SInputSystem.Instance.TapAttackTrigger;
+                    _ = SInputSystem.Instance.TapAttackTrigger & SInputSystem.Instance.UniqueTrigger & SInputSystem.Instance.HoldAttack;
 
                     combo = 0;
-                    controller.Action.Animator.SetTrigger("EndAttack");
-                    controller.ChangeState(controller.Idle);
+                    _controller.Action.MyAnimator.SetTrigger("EndAttack");
+                    _controller.ChangeState(_controller.Idle);
                     return;
                 }
             }

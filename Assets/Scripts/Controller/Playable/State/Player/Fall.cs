@@ -11,13 +11,13 @@ namespace Playable.Player
 
         public override void Start()
         {
-            controller.Action.Animator.SetTrigger("Fall");
+            _controller.Action.MyAnimator.SetTrigger("Fall");
         }
 
         public override void Update()
         {
             //çUåÇì¸óÕåüím
-            if (controller.Attack(out var comboAdd))
+            if (_controller.NextAction(out var comboAdd))
             {
                 return;
             }
@@ -26,34 +26,34 @@ namespace Playable.Player
             var moveValue = SInputSystem.Instance.MoveValue;
             if (moveValue != Vector2.zero)
             {
-                var forward = controller.CameraForward();
-                forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.AirSpeed;
-                controller.moveVector.x = forward.x;
-                controller.moveVector.z = forward.z;
+                var forward = _controller.CameraForward();
+                forward = (forward * moveValue.y + _controller.cameraTrans.right * moveValue.x) * _controller.CharData.AirSpeed;
+                _controller.MoveVector.x = forward.x;
+                _controller.MoveVector.z = forward.z;
             }
 
             //â∫ç~ó ÇÃåvéZ
-            controller.moveVector.y += controller.CharData.GravityValue * controller.ElapsedTime();
+            _controller.MoveVector.y += _controller.CharData.GravityValue * _controller.ElapsedTime();
             //óéâ∫ë¨ìxÇÃí≤êﬂ
-            if (controller.moveVector.y < controller.CharData.MaxFallSpeed)
-                controller.moveVector.y = controller.CharData.MaxFallSpeed;
+            if (_controller.MoveVector.y < _controller.CharData.MaxFallSpeed)
+                _controller.MoveVector.y = _controller.CharData.MaxFallSpeed;
 
             //à⁄ìÆÇ∆âÒì]
-            controller.MoveAndRotate(controller.moveVector);
+            _controller.MoveAndRotate(_controller.MoveVector);
 
-            var moveSpeed = new Vector3(controller.Controller.velocity.x, 0, controller.Controller.velocity.z).magnitude;
-            controller.Action.Animator.SetFloat("MoveVelocity", moveSpeed);
+            var moveSpeed = new Vector3(_controller.Controller.velocity.x, 0, _controller.Controller.velocity.z).magnitude;
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", moveSpeed);
 
             //íÖínîªíË
-            if (controller.Controller.isGrounded)
+            if (_controller.Controller.isGrounded)
             {
-                controller.ChangeState(moveSpeed == 0 ? controller.Idle : controller.Move);
+                _controller.ChangeState(moveSpeed == 0 ? _controller.Idle : _controller.Move);
             }
         }
 
         public override void End()
         {
-            controller.Action.Animator.SetTrigger("Land");
+            _controller.Action.MyAnimator.SetTrigger("Land");
         }
     }
 }

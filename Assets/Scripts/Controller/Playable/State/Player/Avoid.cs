@@ -36,18 +36,18 @@ namespace Playable.Player
 
             timer = 0;
             judgeJustAvoid = 0.01f;
-            startPos = controller.MyTransform.position;
+            startPos = _controller.MyTransform.position;
 
             //移動方向と量を求める
             var moveValue = SInputSystem.Instance.MoveValue;
             if (moveValue != Vector2.zero)
             {
-                var forward = controller.CameraForward();
-                targetPos = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x).normalized * controller.CharData.AvoidDistance;
+                var forward = _controller.CameraForward();
+                targetPos = (forward * moveValue.y + _controller.cameraTrans.right * moveValue.x).normalized * _controller.CharData.AvoidDistance;
             }
             else
             {
-                targetPos = -controller.MyTransform.forward * controller.CharData.AvoidDistance; ;
+                targetPos = -_controller.MyTransform.forward * _controller.CharData.AvoidDistance; ;
             }
             targetPos = startPos + targetPos;
 
@@ -57,9 +57,9 @@ namespace Playable.Player
 
         public override void Update()
         {
-            timer += controller.ElapsedTime();
+            timer += _controller.ElapsedTime();
 
-            var progress = Mathf.Clamp01(timer / controller.CharData.AvoidTime);
+            var progress = Mathf.Clamp01(timer / _controller.CharData.AvoidTime);
 
             //移動割合計算
             judgeJustAvoid = 1f - Mathf.Pow(1f - progress, 3f);
@@ -68,22 +68,22 @@ namespace Playable.Player
             Vector3 idealPos = Vector3.Lerp(startPos, targetPos, judgeJustAvoid);
 
             //差分を計算
-            Vector3 moveVelocity = idealPos - controller.MyTransform.position;
+            Vector3 moveVelocity = idealPos - _controller.MyTransform.position;
             //移動
-            controller.Controller.Move(moveVelocity);
+            _controller.Controller.Move(moveVelocity);
 
             //移動しきったら戻す
-            if (timer >= controller.CharData.AvoidTime)
+            if (timer >= _controller.CharData.AvoidTime)
             {
-                controller.ChangeState(controller.Idle);
+                _controller.ChangeState(_controller.Idle);
                 return;
             }
 
             //移動速度が0ならキャンセル
-            var moveSpeed = new Vector3(controller.Controller.velocity.x, 0, controller.Controller.velocity.z).magnitude;
+            var moveSpeed = new Vector3(_controller.Controller.velocity.x, 0, _controller.Controller.velocity.z).magnitude;
             if (moveSpeed == 0)
             {
-                controller.ChangeState(controller.Idle);
+                _controller.ChangeState(_controller.Idle);
                 return;
             }
             ;

@@ -16,12 +16,12 @@ namespace Enemy
         {
             Debug.Log("ƒAƒCƒhƒ‹");
             timer = 0;
-            time = Random.Range(controller.IdleTime.x, controller.IdleTime.y);
+            time = Random.Range(_controller.IdleTime.x, _controller.IdleTime.y);
         }
 
         public override void Update()
         {
-            if (controller.Scouting())
+            if (_controller.Scouting())
             {
                 return;
             }
@@ -29,7 +29,7 @@ namespace Enemy
             timer += Time.deltaTime;
             if (timer >= time)
             {
-                controller.ChangeState(controller.Loiter);
+                _controller.ChangeState(_controller.Loiter);
             }
         }
     }

@@ -24,34 +24,34 @@ namespace Playable.Player
         public override void Update()
         {
             //攻撃入力検知\
-            if (controller.Attack(out var comboAdd))
+            if (_controller.NextAction(out var comboAdd))
             {
                 return;
             }
 
             //ジャンプ入力検知
-            if (controller.CheckJump())
+            if (_controller.CheckJump())
             {
                 return;
             }
             //落下した
-            if (!controller.IsGround())
+            if (!_controller.IsGround())
             {
-                controller.ChangeState(controller.Fall);
+                _controller.ChangeState(_controller.Fall);
                 return;
             }
             //戦闘中なら
             if (SGameManager.instance.ActivityMode == ActivityMode.Battle)
             {
                 //回避入力検知
-                if (controller.ChangeAvoid())
+                if (_controller.ChangeAvoid())
                 {
                     return;
                 }
                 //防御入力検知
                 if (SInputSystem.Instance.DefenseButton)
                 {
-                    controller.ChangeState(controller.Defense);
+                    _controller.ChangeState(_controller.Defense);
                     return;
                 }
             }
@@ -59,7 +59,7 @@ namespace Playable.Player
             //移動入力
             var moveValue = SInputSystem.Instance.MoveValue;
             //カメラの前方ベクトル
-            var forward = controller.CameraForward();
+            var forward = _controller.CameraForward();
 
             //入力中なら
             if (moveValue.sqrMagnitude > 0.0f)
@@ -68,29 +68,29 @@ namespace Playable.Player
                 finalInput = moveValue;
             }
 
-            controller.moveVector = (forward * finalInput.y + controller.cameraTrans.right * finalInput.x);
+            _controller.MoveVector = (forward * finalInput.y + _controller.cameraTrans.right * finalInput.x);
             //最大速度指定　バトル中 || 走り中 ? 走り速度 : 歩き速度
-            var maxSpeed = SGameManager.instance.ActivityMode == ActivityMode.Battle || SInputSystem.Instance.RunButton ? controller.CharData.RunSpeed : controller.CharData.WalkSpeed;
+            var maxSpeed = SGameManager.instance.ActivityMode == ActivityMode.Battle || SInputSystem.Instance.RunButton ? _controller.CharData.RunSpeed : _controller.CharData.WalkSpeed;
             //入力状況に合わせて最高速度を変える
             maxSpeed = Mathf.Lerp(0, maxSpeed, moveValue.magnitude);
             //徐々に速度を変える
-            currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, controller.CharData.VariableSpeed * controller.ElapsedTime());
+            currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, _controller.CharData.VariableSpeed * _controller.ElapsedTime());
 
             //移動ベクトルに速度を掛ける
-            controller.moveVector *= currentSpeed;
+            _controller.MoveVector *= currentSpeed;
             //浮かないようにする
-            controller.moveVector.y = -0.1f;
+            _controller.MoveVector.y = -0.1f;
             //移動と回転
-            controller.MoveAndRotate(controller.moveVector);
+            _controller.MoveAndRotate(_controller.MoveVector);
 
             //移動速度でアニメーションの速度を変える
-            var moveVelocity = controller.GetMoveSpeed() * Time.timeScale;
-            controller.Action.Animator.SetFloat("MoveVelocity", moveVelocity);
+            var moveVelocity = _controller.GetMoveSpeed() * Time.timeScale;
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", moveVelocity);
 
             //停止した
             if (moveVelocity == 0)
             {
-                controller.ChangeState(controller.Idle);
+                _controller.ChangeState(_controller.Idle);
                 return;
             }
         }

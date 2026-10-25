@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b96ed6b5780ecce4499efa5bc51d5bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Impact
-  mask:
+  _hitLayer:
     serializedVersion: 2
-    m_Bits: 640
+    m_Bits: 2176
   width: 0.3
   height: 1.25
   speed: 25

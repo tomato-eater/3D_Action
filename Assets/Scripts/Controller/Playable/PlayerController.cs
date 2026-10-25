@@ -1,3 +1,4 @@
+using Interface;
 using UnityEngine;
 
 namespace Playable.Player
@@ -14,7 +15,7 @@ namespace Playable.Player
     /// プレイヤー操作
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : BehaviorControllerBase<PlayerController, State>
+    public class PlayerController : BehaviorControllerBase<PlayerController, State>, IDamage
     {
         [Header("Parameter")]
         [SerializeField] PlayableData charData;
@@ -26,7 +27,7 @@ namespace Playable.Player
 
         [Header("Component")]
         [SerializeField] CharacterController controller;
-        [SerializeField] ActionController action;
+        [SerializeField] ActionControllerBase action;
 
 
         /// <summary> アイドル </summary>
@@ -46,6 +47,8 @@ namespace Playable.Player
         public HoldAttackStart HoldAttackB { get; private set; }
         /// <summary> 長押し攻撃終了 </summary>
         public HoldAttackEnd HoldAttackE { get; private set; }
+        /// <summary> 固有技 </summary>
+        public Unique Unique { get; private set; }
 
         /// <summary> 防御 </summary>
         public Defense Defense { get; private set; }
@@ -60,14 +63,14 @@ namespace Playable.Player
         /// <summary>
         /// 移動量
         /// </summary>
-        public Vector3 moveVector;
+        public Vector3 MoveVector;
 
         /// <summary> キャラクターの共通のパラメーター </summary>
         public PlayableData CharData => charData;
         /// <summary> キャラクターコントローラー </summary>
         public CharacterController Controller => controller;
         /// <summary> キャラクター固有のパラメーター </summary>
-        public ActionController Action => action;
+        public ActionControllerBase Action => action;
 
         /// <summary>
         /// ジャスト回避時の残りスロー時間
@@ -91,6 +94,8 @@ namespace Playable.Player
             HoldAttackB = new HoldAttackStart(this);
             HoldAttackE = new HoldAttackEnd(this);
 
+            Unique = new Unique(this);
+
             Defense = new Defense(this);
             Avoid = new Avoid(this);
 
@@ -99,9 +104,9 @@ namespace Playable.Player
             ChangeState(Idle);
         }
 
-        void Update()
+        protected override void Update()
         {
-            state?.Update();
+            base.Update();
 
             if (slowTimer != 0)
             {
@@ -110,12 +115,19 @@ namespace Playable.Player
         }
 
         /// <summary>
-        /// 攻撃の判断
+        /// 繰り出す技の判断
         /// </summary>
+        /// <param name="comboAdd">コンボは途切れてない</param>
         /// <returns>Stateが切り替わった ? 替わった : 替わってない</returns>
-        public bool Attack(out bool comboAdd)
+        public bool NextAction(out bool comboAdd)
         {
             comboAdd = false;
+            //固有技
+            if (SInputSystem.Instance.UniqueTrigger)
+            {
+                ChangeState(Unique);
+                return true;
+            }
             //単押し
             if (SInputSystem.Instance.TapAttackTrigger)
             {
@@ -124,7 +136,7 @@ namespace Playable.Player
                 return true;
             }
             //長押し
-            else if (SInputSystem.Instance.HoldAttack && IsGround())
+            if (SInputSystem.Instance.HoldAttack && IsGround())
             {
                 ChangeState(HoldAttackB);
                 return true;
@@ -185,7 +197,7 @@ namespace Playable.Player
         /// <param name="rot">体を向ける方向</param>
         public void MoveAndRotate(Vector3 rot, float rotMag = 1)
         {
-            Controller.Move(moveVector * ElapsedTime());
+            Controller.Move(MoveVector * ElapsedTime());
 
             rot.Normalize();
             var moveForward = Vector3.Scale(rot, new Vector3(1, 0, 1));
@@ -201,22 +213,6 @@ namespace Playable.Player
         public float GetMoveSpeed() => new Vector2(Controller.velocity.x, Controller.velocity.z).magnitude;
 
         /// <summary>
-        /// コライダーが触れたら(攻撃を喰らったら)通る
-        /// </summary>
-        /// <param name="other"></param>
-        private void OnTriggerEnter(Collider other)
-        {
-            Debug.Log("攻撃をくらった(インターフェースに書き換える)");
-            if (Avoid.judgeJustAvoid <= CharData.JudgeAvoidPercent)
-            {
-                StartSlow();
-            }
-            else
-            {
-            }
-        }
-
-        /// <summary>
         /// ジャスト回避成功　スローになる
         /// </summary>
         void StartSlow()
@@ -224,7 +220,7 @@ namespace Playable.Player
             slowTimer = CharData.SlowTime;
 
             Time.timeScale = CharData.SlowScale;
-            Action.Animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            Action.MyAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
         }
 
         /// <summary>
@@ -236,12 +232,39 @@ namespace Playable.Player
             {
                 slowTimer = 0;
                 Time.timeScale = 1.0f;
-                Action.Animator.updateMode = AnimatorUpdateMode.Normal;
+                Action.MyAnimator.updateMode = AnimatorUpdateMode.Normal;
             }
             slowTimer -= Time.unscaledDeltaTime;
         }
 
 
+
+        //------------------------------------------------------------------------------interface
+
+
+
+        public void Damage(float damage, float stopTime)
+        {
+            //ジャスト回避か?
+            if (Avoid.judgeJustAvoid <= CharData.JudgeAvoidPercent)
+            {
+                StartSlow();
+                return;
+            }
+
+            //ダメージを無効化する技中か?
+            if(State == Unique || Action.Hit())
+            {
+                return;
+            }
+
+            Debug.Log("Damage");
+        }
+
+        public void BlowAway(float damage)
+        {
+            throw new System.NotImplementedException();
+        }
 
 
         /// <summary>

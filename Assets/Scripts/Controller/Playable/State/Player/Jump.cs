@@ -12,17 +12,17 @@ namespace Playable.Player
 
         public override void Start()
         {
-            controller.Action.Animator.SetTrigger("Jump");
+            _controller.Action.MyAnimator.SetTrigger("Jump");
 
             //ジャンプ初速計算
-            float g = Mathf.Abs(controller.CharData.GravityValue);
-            controller.moveVector.y = Mathf.Sqrt(2.0f * controller.CharData.JumpTop * g);
+            float g = Mathf.Abs(_controller.CharData.GravityValue);
+            _controller.MoveVector.y = Mathf.Sqrt(2.0f * _controller.CharData.JumpTop * g);
         }
 
         public override void Update()
         {
             //攻撃入力検知
-            if (controller.Attack(out var comboAdd))
+            if (_controller.NextAction(out var comboAdd))
             {
                 return;
             }
@@ -31,21 +31,21 @@ namespace Playable.Player
             var moveValue = SInputSystem.Instance.MoveValue;
             if (moveValue != Vector2.zero)
             {
-                var forward = controller.CameraForward();
-                forward = (forward * moveValue.y + controller.cameraTrans.right * moveValue.x) * controller.CharData.AirSpeed;
-                controller.moveVector.x = forward.x;
-                controller.moveVector.z = forward.z;
+                var forward = _controller.CameraForward();
+                forward = (forward * moveValue.y + _controller.cameraTrans.right * moveValue.x) * _controller.CharData.AirSpeed;
+                _controller.MoveVector.x = forward.x;
+                _controller.MoveVector.z = forward.z;
             }
 
             //上昇量の計算　調整
-            controller.moveVector.y += controller.CharData.GravityValue * controller.ElapsedTime();
+            _controller.MoveVector.y += _controller.CharData.GravityValue * _controller.ElapsedTime();
             //移動と回転
-            controller.MoveAndRotate(controller.moveVector);
+            _controller.MoveAndRotate(_controller.MoveVector);
 
             //ジャンプで頂点に達した
-            if (controller.moveVector.y <= 0)
+            if (_controller.MoveVector.y <= 0)
             {
-                controller.ChangeState(controller.Fall);
+                _controller.ChangeState(_controller.Fall);
                 return;
             }
         }

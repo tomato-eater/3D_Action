@@ -585,6 +585,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7dfa4aaf-8b8b-484d-81cf-9d4fb69be0bd",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Unique",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "dde27ef3-d4ce-4c34-980e-93585ba29ecd",
                     "path": "<Gamepad>/buttonNorth",
                     "interactions": "",

@@ -18,8 +18,8 @@ namespace Enemy
         {
             Debug.Log("ƒnƒbƒPƒ“");
 
-            controller.Agent.isStopped = true;
-            controller.Area.BattleStart();
+            _controller.Agent.isStopped = true;
+            _controller.Area.BattleStart();
 
             timer = 0;
         }
@@ -47,7 +47,7 @@ namespace Enemy
 
         public override void End()
         {
-            controller.Agent.isStopped = false;
+            _controller.Agent.isStopped = false;
 
         }
     }

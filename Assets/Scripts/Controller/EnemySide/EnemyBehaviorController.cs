@@ -14,7 +14,7 @@ public abstract class EnemyState : StateBase<EnemyBehaviorController>
 /// <summary>
 /// 敵のコントローラー
 /// </summary>
-public class EnemyBehaviorController : BehaviorControllerBase<EnemyBehaviorController, EnemyState>, IDamage, IBlowAway
+public class EnemyBehaviorController : BehaviorControllerBase<EnemyBehaviorController, EnemyState>, IDamage
 {
     [Header("Parameter")]
     [SerializeField] Transform eyeTrans;
@@ -68,9 +68,9 @@ public class EnemyBehaviorController : BehaviorControllerBase<EnemyBehaviorContr
         ChangeState(Idle);
     }
 
-    private void Update()
+    protected override void Update()
     {
-        state?.Update();
+        base.Update();
     }
 
     /// <summary>
@@ -101,9 +101,7 @@ public class EnemyBehaviorController : BehaviorControllerBase<EnemyBehaviorContr
 
     public void Damage(float damage, float stopTime)
     {
-        Debug.Log(damage);
-        status.Damage(damage);
-
+        Debug.Log("喰らった" + damage + " " + stopTime);
     }
 
     public void BlowAway(float damage)

@@ -75,16 +75,5 @@ namespace Playable
         /// 攻撃を離した後の処理
         /// </summary>
         public abstract void ReleaseAttack();
-
-
-        /// <summary>
-        /// スキルを押してる時の処理
-        /// </summary>
-        /// <param name="time">押してる時間</param>
-        public abstract void HoldSkill(float time);
-        /// <summary>
-        /// スキルを離した後の処理
-        /// </summary>
-        public abstract void ReleaseSkill();
     }
 }

@@ -1,4 +1,3 @@
-
 namespace Interface
 {
     /// <summary>
@@ -12,19 +11,12 @@ namespace Interface
         /// <param name="damage">与えるダメージ</param>
         /// <param name="stopTime">ヒットストップの時間</param>
         void Damage(float damage, float stopTime);
-    }
 
-    /// <summary>
-    /// 吹き飛ばす為のインターフェース
-    /// </summary>
-    public interface IBlowAway
-    {
         /// <summary>
-        /// 吹き飛ばすための関数
+        /// ダメージ + 吹き飛ばすための関数
         /// </summary>
         /// <param name="damage">与えるダメージ</param>
         void BlowAway(float damage);
     }
-
 
 }

@@ -3,17 +3,17 @@ using UnityEngine;
 /// <summary>
 /// ステートテンプレート
 /// </summary>
-public abstract class StateBase<Controller>
+public abstract class StateBase<TController>
 {
     /// <summary>
     /// コントローラー
     /// </summary>
-    protected readonly Controller controller;
+    protected TController _controller;
     /// <summary>
     /// 宣言
     /// </summary>
-    /// <param name="t">コントローラー(this)</param>
-    public StateBase(Controller t) => controller = t;
+    /// <param name="t">コントローラー</param>
+    public StateBase(TController t) => _controller = t;
 
     /// <summary>
     /// 切り替え直後
@@ -34,21 +34,26 @@ public abstract class StateBase<Controller>
 /// <summary>
 /// コントローラーテンプレート
 /// </summary>
-public class BehaviorControllerBase<Controller, State> : MonoBehaviour where State :StateBase<Controller>
+public class BehaviorControllerBase<TController, TState> : MonoBehaviour where TState : StateBase<TController>
 {
     /// <summary>
     /// 現在のステート
     /// </summary>
-    protected State state {  get; private set; }
+    protected TState State { get; private set; }
+
+    protected virtual void Update()
+    {
+        State?.Update();
+    }
 
     /// <summary>
     /// ステートの切り替え
     /// </summary>
     /// <param name="s">切り替え先のステート</param>
-    public void ChangeState(State s)
+    public void ChangeState(TState s)
     {
-        state?.End();
-        state = s;
-        state?.Start();
+        State?.End();
+        State = s;
+        State?.Start();
     }
 }

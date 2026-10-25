@@ -17,70 +17,70 @@ namespace Playable.Player
         public override void Start()
         {
             //接近の必要が無ければ攻撃に移行
-            if(controller.Action.Mode.AttackDistance <= 0)
+            if(_controller.Action.Mode.AttackDistance <= 0)
             {
-                controller.ChangeState(controller.TapAttack);
+                _controller.ChangeState(_controller.TapAttack);
                 return;
             }
 
-            controller.Action.Mode.Approach();
+            _controller.Action.Mode.Approach();
 
-            startPos = controller.MyTransform.position;
+            startPos = _controller.MyTransform.position;
             endAni = false;
         }
 
         public override void Update()
         {
             if (!endAni)
-                endAni = controller.Action.GetTransferAnime;
+                endAni = _controller.Action.GetTransferAnime;
 
 
             //接敵中に倒された等　ターゲットが居ない時
-            if (!controller.target)
+            if (!_controller.target)
             {
                 if (endAni)
                 {
-                    controller.ChangeState(controller.TapAttack);
+                    _controller.ChangeState(_controller.TapAttack);
                     return;
                 }
             }
             else
             {
                 //自分の座標
-                var myPos = controller.Action.AttackPoint.position;
+                var myPos = _controller.Action.AttackPoint.position;
 
                 //目的地(ターゲットの座標)の座標
-                var enemyPos = controller.target.transform.position;
+                var enemyPos = _controller.target.transform.position;
                 //自身からターゲットの方向のベクトル
                 var adjustment = Vector3.Scale(enemyPos - myPos, new Vector3(1, 0, 1)).normalized;
 
                 //調査する座標を調整
-                myPos += adjustment * controller.Controller.radius;
-                enemyPos -= adjustment * controller.target.Radius;
+                myPos += adjustment * _controller.Controller.radius;
+                enemyPos -= adjustment * _controller.target.Radius;
 
                 //十分に近いか
-                bool dis = Vector3.Distance(myPos, enemyPos) <= controller.Action.Mode.AttackDistance;
+                bool dis = Vector3.Distance(myPos, enemyPos) <= _controller.Action.Mode.AttackDistance;
 
                 //移動・回転方向計算
-                var moveVector = (enemyPos - myPos).normalized * controller.CharData.ApproachSpeed;
+                var moveVector = (enemyPos - myPos).normalized * _controller.CharData.ApproachSpeed;
 
                 //移動の必要が．．．
-                if (!dis) controller.moveVector = moveVector;   //ある
-                else controller.moveVector = Vector3.zero;      //ない
+                if (!dis) _controller.MoveVector = moveVector;   //ある
+                else _controller.MoveVector = Vector3.zero;      //ない
 
-                controller.MoveAndRotate(moveVector, 2.5f);
+                _controller.MoveAndRotate(moveVector, 2.5f);
 
                 if (dis && endAni)
                 {
-                    controller.ChangeState(controller.TapAttack);
+                    _controller.ChangeState(_controller.TapAttack);
                     return;
                 }
                 //移動距離が限界か
-                if (Vector3.Distance(startPos, controller.MyTransform.position) >= controller.CharData.MaxMoveDistance)
+                if (Vector3.Distance(startPos, _controller.MyTransform.position) >= _controller.CharData.MaxMoveDistance)
                 {
                     if (endAni)
                     {
-                        controller.ChangeState(controller.TapAttack);
+                        _controller.ChangeState(_controller.TapAttack);
                         return;
                     }
                 }

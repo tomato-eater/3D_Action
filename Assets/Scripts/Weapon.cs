@@ -6,7 +6,7 @@ namespace Playable
 
     public class Weapon : MonoBehaviour
     {
-        ActionController controller;
+        ActionControllerBase controller;
 
         [SerializeField] LayerMask hitLayer;
 
@@ -27,7 +27,7 @@ namespace Playable
         List<Collider> colls = new List<Collider>();
 
 
-        public void Set(ActionController i)
+        public void Set(ActionControllerBase i)
         {
             controller = i;
             EndAttack();

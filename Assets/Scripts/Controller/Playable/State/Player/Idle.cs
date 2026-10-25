@@ -11,41 +11,41 @@ namespace Playable.Player
 
         public override void Start()
         {
-            controller.Action.Animator.SetFloat("MoveVelocity", 0);
-            controller.moveVector = Vector3.zero;
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", 0);
+            _controller.MoveVector = Vector3.zero;
         }
 
         public override void Update()
         {
             //攻撃入力検知
-            if (controller.Attack(out var comboAdd))
+            if (_controller.NextAction(out _))
             {
                 return;
             }
 
             //ジャンプ入力検知
-            if (controller.CheckJump())
+            if (_controller.CheckJump())
             {
                 return;
             }
             //落下した
-            if (!controller.IsGround())
+            if (!_controller.IsGround())
             {
-                controller.ChangeState(controller.Fall);
+                _controller.ChangeState(_controller.Fall);
                 return;
             }
             //戦闘中なら
             if (SGameManager.instance.ActivityMode == ActivityMode.Battle)
             {
                 //回避入力検知
-                if (controller.ChangeAvoid())
+                if (_controller.ChangeAvoid())
                 {
                     return;
                 }
                 //防御入力検知
                 if (SInputSystem.Instance.DefenseButton)
                 {
-                    controller.ChangeState(controller.Defense);
+                    _controller.ChangeState(_controller.Defense);
                     return;
                 }
             }
@@ -53,14 +53,14 @@ namespace Playable.Player
             //移動入力検知
             if (SInputSystem.Instance.MoveValue != Vector2.zero)
             {
-                controller.ChangeState(controller.Move);
+                _controller.ChangeState(_controller.Move);
                 return;
             }
 
             //浮かないようにする
-            controller.moveVector.y = -0.1f;
+            _controller.MoveVector.y = -0.1f;
 
-            controller.MoveAndRotate(Vector3.zero);
+            _controller.MoveAndRotate(Vector3.zero);
         }
     }
 

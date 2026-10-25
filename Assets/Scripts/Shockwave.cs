@@ -13,61 +13,61 @@ namespace Playable
         /// <summary>
         /// 判定を持たせるレイヤー
         /// </summary>
-        [SerializeField] LayerMask mask;
+        [SerializeField] LayerMask _hitLayer;
         /// <summary>
         /// 箱のサイズ(横)
         /// </summary>
-        [SerializeField] float width;
+        [SerializeField] float _width;
         /// <summary>
         /// 箱のサイズ(縦)
         /// </summary>
-        [SerializeField] float height;
+        [SerializeField] float _height;
         /// <summary>
         /// 速度
         /// </summary>
-        [SerializeField] float speed;
+        [SerializeField] float _speed;
         /// <summary>
         /// 生存時間
         /// </summary>
-        [SerializeField] float lifeTime;
+        [SerializeField] float _lifeTime;
 
         /// <summary>
         /// 自分のコントローラー　
         /// </summary>
-        PlayerController controller;
+        PlayerController _controller;
         /// <summary>
         /// １フレーム前のポジション
         /// </summary>
-        Vector3 beforePos = Vector3.zero;
+        Vector3 _beforePos = Vector3.zero;
         /// <summary>
         /// 時間
         /// </summary>
-        float timer;
+        float _timer;
         /// <summary>
         /// 既に触れたコライダー
         /// </summary>
-        List<Collider> colls = new List<Collider>();
+        private List<Collider> _colls = new();
 
         private void OnEnable()
         {
-            timer = 0;
-            beforePos = transform.position;
-            colls.Clear();
+            _timer = 0;
+            _beforePos = transform.position;
+            _colls.Clear();
         }
 
-        public void Set(PlayerController controller) => this.controller = controller;
+        public void Set(PlayerController controller) => this._controller = controller;
 
         private void Update()
         {
             //経過時間
-            var time = controller.ElapsedTime();
+            var time = _controller.ElapsedTime();
             Debug.Log("npcを追加する場合、ここが問題になる");
 
             //前方に直進
-            transform.Translate(Vector3.forward * speed * time);
-            timer += time;
+            transform.Translate(_speed * time * Vector3.forward);
+            _timer += time;
             //寿命が来たら非表示
-            if (timer >= lifeTime)
+            if (_timer >= _lifeTime)
             {
                 gameObject.SetActive(false);
                 return;
@@ -75,18 +75,18 @@ namespace Playable
 
             var currentPos = transform.position;
             //中心を計算
-            var center = (currentPos + beforePos) * 0.5f;
+            var center = (currentPos + _beforePos) * 0.5f;
             //移動ベクトル
-            var moveDis = (currentPos - beforePos).magnitude;
+            var moveDis = (currentPos - _beforePos).magnitude;
 
             //あまりに短いと次に持ち越し
             if (moveDis <= 0.001f) return;
 
             //箱の半分のサイズ
-            var boxHalfExtents = new Vector3(width, height, moveDis * 0.5f);
+            var boxHalfExtents = new Vector3(_width, _height, moveDis * 0.5f);
 
             // 自分の現在の座標（中心）、サイズ、現在の回転角度を指定して敵を検知
-            Collider[] colliders = Physics.OverlapBox(transform.position, boxHalfExtents, transform.rotation, mask);
+            Collider[] colliders = Physics.OverlapBox(transform.position, boxHalfExtents, transform.rotation, _hitLayer);
 
             //衝撃波の判定サイズをScene画面に緑色の箱でリアルタイム表示
             DebugDrawBox(center, boxHalfExtents * 2f, transform.rotation, Color.green);
@@ -94,19 +94,20 @@ namespace Playable
             foreach (var coll in colliders)
             {
                 // まだこの衝撃波が当たっていない相手ならダメージ
-                if (!colls.Contains(coll))
+                if (!_colls.Contains(coll))
                 {
-                    colls.Add(coll);
+                    _colls.Add(coll);
 
                     // インターフェース経由でダメージを適用
-                    if (coll.TryGetComponent<Interface.IBlowAway>(out var target))
+                    if (coll.TryGetComponent<Interface.IDamage>(out var target))
                     {
                         Debug.Log(coll.name);
+                        target.BlowAway(0);
                     }
                 }
             }
 
-            beforePos = currentPos;
+            _beforePos = currentPos;
         }
 
         // デバッグ用の箱描きメソッド

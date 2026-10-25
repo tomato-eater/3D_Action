@@ -60,15 +60,5 @@ namespace Playable.Alpha
             slashObjects.Add(slash);
         }
 
-        public override void HoldSkill(float time)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ReleaseSkill()
-        {
-            throw new System.NotImplementedException();
-        }
-
     }
 }

@@ -17,7 +17,7 @@ public class AnimatorStateBehavior : StateMachineBehaviour
         {
             trigger = false;
 
-            if (animator.TryGetComponent<ActionController>(out var controller))
+            if (animator.TryGetComponent<ActionControllerBase>(out var controller))
             {
                 controller.SetTransferAnime();
             }
