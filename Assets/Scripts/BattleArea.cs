@@ -6,7 +6,7 @@ public class BattleArea : MonoBehaviour
     [SerializeField, Tooltip("—LŒø‹——£")] float activeRadius = 60.0f;
 
     [SerializeField, Tooltip("í“¬ƒGƒŠƒA”¼Œa")] float radius;
-    [Tooltip("“G")] public EnemyBehaviorController[] enemyControllers;
+    [Tooltip("“G")] public Enemy.EnemyController[] enemyControllers;
 
     /// <summary>
     /// •`‰æ”ÍˆÍ“à‚É“ü‚Á‚½

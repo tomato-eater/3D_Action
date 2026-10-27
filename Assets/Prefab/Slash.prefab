@@ -48,10 +48,10 @@ MonoBehaviour:
   _hitLayer:
     serializedVersion: 2
     m_Bits: 2176
-  width: 0.3
-  height: 1.25
-  speed: 25
-  lifeTime: 0.3
+  _width: 0.75
+  _height: 2
+  _speed: 30
+  _lifeTime: 0.25
 --- !u!1001 &3974686816233622296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -141,8 +141,24 @@ PrefabInstance:
       value: Slash Projectile VFX Water
       objectReference: {fileID: 0}
     - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
+      propertyPath: prewarm
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
       propertyPath: playOnAwake
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
+      propertyPath: startDelay.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
+      propertyPath: InitialModule.size3D
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6111486948785554854, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -166,7 +182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6111486948785554855, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: 6111486948785554855, guid: f7967f33aeac15f48a3732e3fd3ac36c, type: 3}
       propertyPath: m_LocalRotation.w

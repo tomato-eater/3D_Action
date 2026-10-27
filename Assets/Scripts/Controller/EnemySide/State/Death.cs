@@ -5,9 +5,9 @@ namespace Enemy
     /// <summary>
     /// EnemyŽ€–S
     /// </summary>
-    public class Death : EnemyState
+    public class Death : State
     {
-        public Death(EnemyBehaviorController controller) : base(controller) { }
+        public Death(EnemyController controller) : base(controller) { }
 
         public override void Start()
         {

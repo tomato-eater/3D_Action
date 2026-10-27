@@ -27,8 +27,6 @@ namespace Playable.Player
                 var myPos = _controller.Action.AttackPoint.position;
                 //目的地(ターゲットの座標)の座標
                 var enemyPos = _controller.target.transform.position;
-                //自身からターゲットの方向のベクトル
-                var adjustment = Vector3.Scale(enemyPos - myPos, new Vector3(1, 0, 1)).normalized;
 
                 //回転方向計算
                 var moveVector = (enemyPos - myPos).normalized;

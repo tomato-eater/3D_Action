@@ -3,33 +3,35 @@ using UnityEngine;
 
 namespace Playable
 {
-
+    /// <summary>
+    /// 武器の当たり判定と処理
+    /// </summary>
     public class Weapon : MonoBehaviour
     {
-        ActionControllerBase controller;
+        ActionControllerBase _controller;
 
-        [SerializeField] LayerMask hitLayer;
+        [SerializeField] LayerMask _hitLayer;
 
-        [SerializeField, Tooltip("レイを飛ばす基準_外側")] Transform markOutside;
-        [SerializeField, Tooltip("レイを飛ばす基準_内側")] Transform markInside;
+        [SerializeField, Tooltip("レイを飛ばす基準")] Transform _markOutside;
+        [SerializeField, Tooltip("レイを飛ばす基準")] Transform _markInside;
 
         /// <summary>
         /// 1フレーム前の基準_外側
         /// </summary>
-        Vector3 beforeOut;
+        Vector3 _beforeOut;
         /// <summary>
         /// 1フレーム前の基準_内側
         /// </summary>
-        Vector3 beforeIn;
+        Vector3 _beforeIn;
 
-        bool attack = false;
+        bool _attack = false;
 
-        List<Collider> colls = new List<Collider>();
+        List<Collider> _colls = new ();
 
 
         public void Set(ActionControllerBase i)
         {
-            controller = i;
+            _controller = i;
             EndAttack();
         }
 
@@ -38,28 +40,28 @@ namespace Playable
         /// </summary>
         public void StartAttack()
         {
-            attack = true;
-            colls.Clear();
+            _attack = true;
+            _colls.Clear();
 
-            beforeOut = markOutside.position;
-            beforeIn = markInside.position;
+            _beforeOut = _markOutside.position;
+            _beforeIn = _markInside.position;
         }
         /// <summary>
         /// 攻撃判定終了
         /// </summary>
-        public void EndAttack() => attack = false;
+        public void EndAttack() => _attack = false;
 
         // Update is called once per frame
         void LateUpdate()
         {
-            if (!attack) return;
+            if (!_attack) return;
 
-            var currentOut = markOutside.position;
-            var currentIn = markInside.position;
+            var currentOut = _markOutside.position;
+            var currentIn = _markInside.position;
             //４頂点の中心を求める
-            var center = (currentOut + currentIn + beforeOut + beforeIn) * 0.25f;
+            var center = (currentOut + currentIn + _beforeOut + _beforeIn) * 0.25f;
             //移動ベクトル
-            var moveDir = currentOut - beforeOut;
+            var moveDir = currentOut - _beforeOut;
             //長さ
             var lengthDir = currentOut - currentIn;
 
@@ -74,31 +76,31 @@ namespace Playable
 
             DebugDrawBox(center, boxHalfExtents * 2f, boxRotation, Color.green);
             //判定の取得
-            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, hitLayer);
+            Collider[] colliders = Physics.OverlapBox(center, boxHalfExtents, boxRotation, _hitLayer);
             bool hitStop = false;
             foreach (var collider in colliders)
             {
                 //既に判定を取得していれば飛ばす
-                if (colls.Contains(collider)) continue;
+                if (_colls.Contains(collider)) continue;
 
                 hitStop = true;
-                colls.Add(collider);
+                _colls.Add(collider);
                 if (collider.TryGetComponent<Interface.IDamage>(out var target))
                 {
-                    //target.Damage(50, controller.HitStopTime);
-                    Debug.Log("敵のHitStopを一時的に無効化");
+                    target.Damage(50, 0.1f, Vector3.zero);
+                    Debug.Log("ヒットストップの時間を直接指定している");
                 }
             }
 
             //攻撃が当たっていればPlayHitStop
             if (hitStop)
             {
-                //controller.HitStop();
-                Debug.Log("自身のHitStopを一時的に無効化");
+                _controller.StartHitStop(0.1f);
+                Debug.Log("ヒットストップの時間を直接指定している");
 
             }
-            beforeOut = currentOut;
-            beforeIn = currentIn;
+            _beforeOut = currentOut;
+            _beforeIn = currentIn;
         }
 
 
@@ -111,14 +113,14 @@ namespace Playable
             // 箱のローカル座標における 8 つの頂点を定義
             Vector3[] vertices = new Vector3[8]
             {
-        new Vector3(-half.x, -half.y, -half.z),
-        new Vector3( half.x, -half.y, -half.z),
-        new Vector3( half.x,  half.y, -half.z),
-        new Vector3(-half.x,  half.y, -half.z),
-        new Vector3(-half.x, -half.y,  half.z),
-        new Vector3( half.x, -half.y,  half.z),
-        new Vector3( half.x,  half.y,  half.z),
-        new Vector3(-half.x,  half.y,  half.z)
+                new (-half.x, -half.y, -half.z),
+                new ( half.x, -half.y, -half.z),
+                new ( half.x,  half.y, -half.z),
+                new (-half.x,  half.y, -half.z),
+                new (-half.x, -half.y,  half.z),
+                new ( half.x, -half.y,  half.z),
+                new ( half.x,  half.y,  half.z),
+                new (-half.x,  half.y,  half.z)
             };
 
             // 8 つの頂点に、現在の「中心（center）」と「角度（rotation）」を掛け算して世界座標に変換

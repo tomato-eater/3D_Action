@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Playable.Alpha
 {
@@ -17,7 +17,7 @@ namespace Playable.Alpha
         public override bool ChargeMove => false;
 
         [SerializeField] GameObject SlashObject;
-        List<GameObject> slashObjects = new List<GameObject>();
+        private List<GameObject> _slashObjects = new ();
 
 
         public override bool HoldAttack(float time)
@@ -37,11 +37,11 @@ namespace Playable.Alpha
         public void HoldSlash()
         {
             //未使用斬撃があれば再利用
-            foreach (var slashObject in slashObjects)
+            foreach (var slashObject in _slashObjects)
             {
                 if (slashObject.activeSelf) continue;
-                slashObject.transform.position = transform.position;
-                slashObject.transform.rotation = transform.rotation;
+
+                slashObject.transform.SetPositionAndRotation(transform.position, transform.rotation);
                 slashObject.SetActive(true);
                 return;
             }
@@ -50,14 +50,14 @@ namespace Playable.Alpha
             slash.transform.rotation = transform.rotation;
             if (slash.TryGetComponent<Shockwave>(out var shockwave))
             {
-                if (transform.parent.TryGetComponent<Player.PlayerController>(out var player))
+                if (TryGetComponent<ActionControllerBase>(out var action))
                 {
-                    shockwave.Set(player);
+                    shockwave.Set(action.ElapsedTime);
                     Debug.Log("npcを追加した場合、ここが問題になる");
                 }
             }
 
-            slashObjects.Add(slash);
+            _slashObjects.Add(slash);
         }
 
     }

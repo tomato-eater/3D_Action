@@ -5,9 +5,9 @@ namespace Enemy
     /// <summary>
     /// EnemyƒAƒCƒhƒ‹
     /// </summary>
-    public class Idle : EnemyState
+    public class Idle : State
     {
-        public Idle(EnemyBehaviorController controller) : base(controller) { }
+        public Idle(EnemyController controller) : base(controller) { }
 
         float time = 0;
         float timer = 0;

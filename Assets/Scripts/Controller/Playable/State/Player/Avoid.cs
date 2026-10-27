@@ -27,7 +27,7 @@ namespace Playable.Player
         /// <summary>
         /// 回避時間経過割合
         /// </summary>
-        public float judgeJustAvoid { get; private set; } = 1;
+        public float JudgeJustAvoid { get; private set; } = 1;
 
         public override void Start()
         {
@@ -35,7 +35,7 @@ namespace Playable.Player
             SInputSystem.Instance.AvoidActive(false);
 
             timer = 0;
-            judgeJustAvoid = 0.01f;
+            JudgeJustAvoid = 0.01f;
             startPos = _controller.MyTransform.position;
 
             //移動方向と量を求める
@@ -62,10 +62,10 @@ namespace Playable.Player
             var progress = Mathf.Clamp01(timer / _controller.CharData.AvoidTime);
 
             //移動割合計算
-            judgeJustAvoid = 1f - Mathf.Pow(1f - progress, 3f);
+            JudgeJustAvoid = 1f - Mathf.Pow(1f - progress, 3f);
 
             //割合から移動先の位置を取得
-            Vector3 idealPos = Vector3.Lerp(startPos, targetPos, judgeJustAvoid);
+            Vector3 idealPos = Vector3.Lerp(startPos, targetPos, JudgeJustAvoid);
 
             //差分を計算
             Vector3 moveVelocity = idealPos - _controller.MyTransform.position;
@@ -93,7 +93,7 @@ namespace Playable.Player
         {
             //回避入力ができるようにする
             SInputSystem.Instance.AvoidActive(true);
-            judgeJustAvoid = 1;
+            JudgeJustAvoid = 1;
         }
     }
 }

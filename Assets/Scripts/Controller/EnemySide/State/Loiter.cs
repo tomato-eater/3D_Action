@@ -1,3 +1,4 @@
+using Interface;
 using UnityEngine;
 
 namespace Enemy
@@ -5,9 +6,9 @@ namespace Enemy
     /// <summary>
     /// Enemyœpœj
     /// </summary>
-    public class Loiter : EnemyState
+    public class Loiter : State
     {
-        public Loiter(EnemyBehaviorController controller) : base(controller) { }
+        public Loiter(EnemyController controller) : base(controller) { }
 
         bool move = false;
 

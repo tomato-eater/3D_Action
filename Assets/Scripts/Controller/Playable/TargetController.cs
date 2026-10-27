@@ -19,6 +19,11 @@ namespace Playable.Player
         int individual;
         int part;
 
+        /// <summary>
+        /// 索敵時にヒットしたコライダー
+        /// </summary>
+        Collider[] _hit = new Collider[10]; 
+
         private void Start()
         {
             TryGetComponent<PlayerController>(out player);
@@ -63,7 +68,7 @@ namespace Playable.Player
                 if (GetShortestCollider(out var collider))
                 {
                     //最短にいる敵を取得
-                    if (collider.transform.TryGetComponent<EnemyBehaviorController>(out var controller))
+                    if (collider.transform.TryGetComponent<Enemy.EnemyController>(out var controller))
                     {
                         //ロックオン
                         part = 0;
@@ -95,15 +100,11 @@ namespace Playable.Player
             float minDir = float.MaxValue;
 
             //範囲内で索敵
-            Collider[] hit = Physics.OverlapSphere(player.MyTransform.position, scoutingRadius, mask);
-            //居なければ終わり
-            if (hit.Length == 0)
-            {
-                return false;
-            }
+            Physics.OverlapSphereNonAlloc(player.MyTransform.position, scoutingRadius, _hit, mask);
             //該当した敵を洗い出す
-            foreach (var enemy in hit)
+            foreach (var enemy in _hit)
             {
+                if (enemy == null) continue;
                 //自身から敵へのベクトル、角度を調べる
                 var dir = (enemy.transform.position - player.MyTransform.position).normalized;
                 var eAngle = Vector3.Angle(player.CameraForward(), dir);

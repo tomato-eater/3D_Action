@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Playable
@@ -9,7 +11,7 @@ namespace Playable
     public abstract class ActionControllerBase : MonoBehaviour
     {
         [Header("Parameter")]
-        [SerializeField, Tooltip("武器データ(今はプレハブを直指定)")] GameObject _weaponData;
+        [SerializeField, Tooltip("武器データ(今はプレハブを直指定)")] protected GameObject _weaponData;
 
         [Header("Refer")]
         [SerializeField, Tooltip("AttackPoint")] Transform _attackPoint;
@@ -21,7 +23,11 @@ namespace Playable
         [Header("Component")]
         [SerializeField] Animator _animator;
 
+        public Interface.IElapsedTime ElapsedTime {  get; private set; }
+
         protected bool _endUnique;
+
+        protected CancellationTokenSource _hitStopToken;
 
         /// <summary>
         /// 読み取り専用　攻撃の基準点
@@ -64,8 +70,19 @@ namespace Playable
             }
         }
 
-        private void Start()
+
+        private void OnDisable()
         {
+            StopHitStop();
+        }
+
+
+
+
+        public void Set(Interface.IElapsedTime elapsedTime)
+        {
+            ElapsedTime = elapsedTime;
+
             foreach (var action in _actions)
                 action.Set(_animator);
         }
@@ -129,6 +146,58 @@ namespace Playable
 
             mode.ReleaseAttack();
         }
+
+        /// <summary>
+        /// ヒットストップ開始
+        /// </summary>
+        /// <param name="stopTime"></param>
+        public void StartHitStop(float stopTime)
+        {
+            if (_hitStopToken != null) StopHitStop();
+
+            _hitStopToken = new ();
+            HitStop(stopTime, _hitStopToken.Token).Forget();
+        }
+        /// <summary>
+        /// ヒットストップ中止
+        /// </summary>
+        public void StopHitStop()
+        {
+            _hitStopToken?.Cancel();
+            _hitStopToken?.Dispose();
+            _hitStopToken = null;
+        }
+        /// <summary>
+        /// ヒットストップでアニメーションの速度を0に
+        /// </summary>
+        /// <param name="stopTime">止める時間</param>
+        /// <param name="token">キャンセルトークン</param>
+        /// <returns>void</returns>
+        async UniTaskVoid HitStop(float stopTime, CancellationToken token)
+        {
+            float elapsedTime = 0;
+            try
+            {
+                MyAnimator.speed = 0;
+
+                while (elapsedTime < stopTime)
+                {
+                    elapsedTime += ElapsedTime.ElapsedTime();
+                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                }
+
+                _hitStopToken?.Dispose();
+                _hitStopToken = null;
+            }
+            finally
+            {
+                MyAnimator.speed = 1;
+            }
+        }
+
+
+
+
 
 
         /// <summary>

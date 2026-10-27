@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96e1daae56f1fcb42911e7bcde69abfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  hitLayer:
+  _hitLayer:
     serializedVersion: 2
     m_Bits: 2176
-  markOutside: {fileID: 647826099306531886}
-  markInside: {fileID: 6944081739933358427}
+  _markOutside: {fileID: 647826099306531886}
+  _markInside: {fileID: 6944081739933358427}

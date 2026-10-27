@@ -5,9 +5,9 @@ namespace Enemy
     /// <summary>
     /// Enemy”­Œ©
     /// </summary>
-    public class Discovery : EnemyState
+    public class Discovery : State
     {
-        public Discovery(EnemyBehaviorController controller) : base(controller) { }
+        public Discovery(EnemyController controller) : base(controller) { }
 
         /// <summary>
         /// ‰¼‚Ì•Ï”

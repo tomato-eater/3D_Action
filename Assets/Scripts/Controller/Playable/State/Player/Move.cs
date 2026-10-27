@@ -24,19 +24,22 @@ namespace Playable.Player
         public override void Update()
         {
             //攻撃入力検知\
-            if (_controller.NextAction(out var comboAdd))
+            if (_controller.NextAction(out _))
             {
+                currentSpeed = 2.0f;
                 return;
             }
 
             //ジャンプ入力検知
             if (_controller.CheckJump())
             {
+                currentSpeed = 2.0f;
                 return;
             }
             //落下した
             if (!_controller.IsGround())
             {
+                currentSpeed = 2.0f;
                 _controller.ChangeState(_controller.Fall);
                 return;
             }

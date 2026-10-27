@@ -1,6 +1,7 @@
+using Interface;
+using Playable.Player;
 using System.Collections.Generic;
 using UnityEngine;
-using Playable.Player;
 
 namespace Playable
 {
@@ -34,7 +35,7 @@ namespace Playable
         /// <summary>
         /// 自分のコントローラー　
         /// </summary>
-        PlayerController _controller;
+        IElapsedTime _controller;
         /// <summary>
         /// １フレーム前のポジション
         /// </summary>
@@ -55,7 +56,7 @@ namespace Playable
             _colls.Clear();
         }
 
-        public void Set(PlayerController controller) => this._controller = controller;
+        public void Set(IElapsedTime controller) => _controller = controller;
 
         private void Update()
         {
@@ -102,7 +103,7 @@ namespace Playable
                     if (coll.TryGetComponent<Interface.IDamage>(out var target))
                     {
                         Debug.Log(coll.name);
-                        target.BlowAway(0);
+                        target.BlowAway(0, Vector3.zero);
                     }
                 }
             }

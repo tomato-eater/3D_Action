@@ -22,7 +22,7 @@ namespace Playable.Player
         public override void Update()
         {
             //UŒ‚“ü—ÍŒŸ’m
-            if (_controller.NextAction(out var comboAdd))
+            if (_controller.NextAction(out _))
             {
                 return;
             }

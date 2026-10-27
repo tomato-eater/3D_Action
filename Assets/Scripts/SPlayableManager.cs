@@ -5,18 +5,18 @@ using UnityEngine;
 /// </summary>
 public class SPlayableManager : MonoBehaviour
 {
-    public static SPlayableManager instance { get; private set; }
+    public static SPlayableManager Instance { get; private set; }
     int playableCharacter = 0;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 

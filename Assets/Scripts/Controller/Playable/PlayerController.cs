@@ -15,7 +15,7 @@ namespace Playable.Player
     /// プレイヤー操作
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : BehaviorControllerBase<PlayerController, State>, IDamage
+    public class PlayerController : BehaviorControllerBase<PlayerController, State>, IElapsedTime, IDamage
     {
         [Header("Parameter")]
         [SerializeField] PlayableData charData;
@@ -100,6 +100,7 @@ namespace Playable.Player
             Avoid = new Avoid(this);
 
             Action.EquipWeapon();
+            Action.Set(this);
 
             ChangeState(Idle);
         }
@@ -146,10 +147,10 @@ namespace Playable.Player
         }
 
         /// <summary>
-        /// 経過時間取得
+        /// 行動速度取得
         /// </summary>
         /// <returns>プレイヤー以外スロー ? timeScaleの影響を受けない : timeScaleの影響を受ける </returns>
-        public float ElapsedTime() => slowTimer != 0 ? Time.unscaledDeltaTime : Time.deltaTime;
+        public float ElapsedTime() => slowTimer > 0 ? Time.unscaledDeltaTime : Time.deltaTime;
 
         /// <summary>
         /// 着地判定
@@ -243,10 +244,10 @@ namespace Playable.Player
 
 
 
-        public void Damage(float damage, float stopTime)
+        public void Damage(float damage, float stopTime, Vector3 force)
         {
             //ジャスト回避か?
-            if (Avoid.judgeJustAvoid <= CharData.JudgeAvoidPercent)
+            if (Avoid.JudgeJustAvoid <= CharData.JudgeAvoidPercent)
             {
                 StartSlow();
                 return;
@@ -261,7 +262,7 @@ namespace Playable.Player
             Debug.Log("Damage");
         }
 
-        public void BlowAway(float damage)
+        public void BlowAway(float damage, Vector3 force)
         {
             throw new System.NotImplementedException();
         }

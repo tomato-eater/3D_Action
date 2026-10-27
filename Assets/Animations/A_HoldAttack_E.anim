@@ -121348,15 +121348,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.93333334
-    functionName: HoldSlash
+  - time: 0.96666664
+    functionName: OffWeapon
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.96666664
-    functionName: OffWeapon
+    functionName: HoldSlash
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

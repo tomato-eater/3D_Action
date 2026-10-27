@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 /// <summary>
 /// ロックオン出来るポイント
@@ -11,18 +12,13 @@ public class TargetPoint : MonoBehaviour
     //半径取得用
     public float Radius => radius;
 
+
     /// <summary>
-    /// 自分自身のコントローラー(親)
+    /// 接地判定の可視化
     /// </summary>
-    EnemyBehaviorController enemyController;
-
-    private void Start()
+    private void OnDrawGizmos()
     {
-        transform.parent.TryGetComponent<EnemyBehaviorController>(out enemyController);
-    }
-
-    public void Damage(float damage)
-    {
-        Debug.Log(damage);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

@@ -90,8 +90,7 @@ public class CameraController : MonoBehaviour
             LockMode(ref pos, ref rot);
         }
         //最終結果を更新
-        MyTransform.position = pos;
-        MyTransform.rotation = rot;
+        MyTransform.SetPositionAndRotation(pos, rot);
     }
 
     /// <summary>
@@ -115,8 +114,7 @@ public class CameraController : MonoBehaviour
     /// <returns>最終的なカメラの位置</returns>
     Vector3 AntiSeeThrough(Vector3 pos, Vector3 dir)
     {
-        RaycastHit hit;
-        if (Physics.Linecast(pos, dir, out hit, layerMask))
+        if (Physics.Linecast(pos, dir, out var hit, layerMask))
         {
             dir = hit.point + hit.normal * cameraMargin;
         }
