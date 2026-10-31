@@ -54,6 +54,10 @@ namespace Enemy
 
         /// <summary> ”­Œ© </summary>
         public Discovery Discovery { get; private set; }
+        /// <summary>
+        /// ‘Ò‹@(Œ„)
+        /// </summary>
+        public Wait Wait { get; private set; }
 
 
 
@@ -74,6 +78,10 @@ namespace Enemy
         /// </summary>
         public ActionControllerBase Action => _action;
 
+        /// <summary>
+        /// ƒoƒgƒ‹’†‚©‚Ç‚¤‚©
+        /// </summary>
+        private bool _battle = false;
 
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -94,6 +102,11 @@ namespace Enemy
         protected override void Update()
         {
             base.Update();
+
+            if (_battle)
+            {
+
+            }
         }
 
         private void OnDisable()
@@ -106,6 +119,18 @@ namespace Enemy
         /// </summary>
         /// <returns>“®‚¯‚È‚¢ ? 0 : timeScale </returns>
         public float ElapsedTime() => _stop ? 0 : Time.deltaTime;
+
+        public void BattleChanger(bool battle)
+        {
+            if (battle)
+            {
+                _battle = true;
+            }
+            else
+            {
+                _battle = false;
+            }
+        }
 
         /// <summary>
         /// “G(Player)‚ð’T‚·

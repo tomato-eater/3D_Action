@@ -20,6 +20,7 @@ namespace Enemy
 
             _controller.Agent.isStopped = true;
             _controller.Area.BattleStart();
+            _controller.BattleChanger(true);
 
             timer = 0;
         }
