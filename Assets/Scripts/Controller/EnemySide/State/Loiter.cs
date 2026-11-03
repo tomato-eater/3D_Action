@@ -16,11 +16,13 @@ namespace Enemy
             //移動速度変更
             _controller.Agent.speed = _controller.WalkSpeed;
             //移動先の座標を指定
-            var moveVector = Random.insideUnitCircle.normalized;
-            moveVector *= Random.Range(0, _controller.Area.Radius * _controller.WalkArea);
+            var moveVector = Random.insideUnitCircle * Random.Range(0, _controller.Area.Radius * _controller.WalkArea);
             var targetPos = _controller.Area.AreaPos + new Vector3(moveVector.x, 0, moveVector.y);
-            //移動させる
+            //移動開始
             _controller.Agent.SetDestination(targetPos);
+            //移動方向は前方のみ
+            _controller.Action.MyAnimator.SetFloat("MoveVectorY", 1);
+            _controller.Action.MyAnimator.SetFloat("MoveVectorX", 0);
         }
 
         public override void Update()
@@ -32,6 +34,8 @@ namespace Enemy
 
             //移動している速度を取得
             var moveSpeed = _controller.Agent.velocity.magnitude;
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", moveSpeed);
+
             //動き出した
             if (!move && moveSpeed != 0.0f)
                 move = true;
@@ -42,6 +46,7 @@ namespace Enemy
 
         public override void End()
         {
+            _controller.Action.MyAnimator.SetFloat("MoveVectorY", 0);
             move = false;
         }
     }

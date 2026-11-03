@@ -61,6 +61,7 @@ namespace Playable.Player
 
             //移動入力
             var moveValue = SInputSystem.Instance.MoveValue;
+
             //カメラの前方ベクトル
             var forward = _controller.CameraForward();
 

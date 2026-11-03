@@ -178,7 +178,7 @@ namespace Playable
             float elapsedTime = 0;
             try
             {
-                MyAnimator.speed = 0;
+                MyAnimator.speed = 0.2f;
 
                 while (elapsedTime < stopTime)
                 {

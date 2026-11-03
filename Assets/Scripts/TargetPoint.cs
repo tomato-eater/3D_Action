@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 /// <summary>
 /// ロックオン出来るポイント

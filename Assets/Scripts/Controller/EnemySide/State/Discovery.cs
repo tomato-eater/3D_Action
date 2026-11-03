@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Enemy
 {
     /// <summary>
-    /// Enemy”­Œ©
+    /// Enemy”­Œ©‚µ‚½
     /// </summary>
     public class Discovery : State
     {
@@ -19,10 +19,14 @@ namespace Enemy
             Debug.Log("ƒnƒbƒPƒ“");
 
             _controller.Agent.isStopped = true;
-            _controller.Area.BattleStart();
+            _controller.Agent.updateRotation = false;
+
             _controller.BattleChanger(true);
+            _controller.Area.BattleStart();
 
             timer = 0;
+
+
         }
 
         public override void Update()
@@ -40,9 +44,9 @@ namespace Enemy
 
             ///------‰¼‚Ìˆ—
             timer += Time.deltaTime;
-            if (timer > 1)
+            if (timer >= 1)
             {
-
+                _controller.ChangeState(_controller.Wait);
             }
         }
 

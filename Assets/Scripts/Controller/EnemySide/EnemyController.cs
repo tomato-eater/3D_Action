@@ -32,6 +32,7 @@ namespace Enemy
         [SerializeField, Tooltip("バトルエリア")] BattleArea battleArea;
         [Tooltip("各部位")] public TargetPoint[] points;
         [SerializeField, Tooltip("ステータス")] StatusBase status;
+        public TargetPoint target;
 
         [Header("Component")]
         [SerializeField] NavMeshAgent agent;
@@ -91,9 +92,14 @@ namespace Enemy
             if (!battleArea) MyTransform.parent.TryGetComponent<BattleArea>(out battleArea);
             if (!agent) MyTransform.TryGetComponent<NavMeshAgent>(out agent);
 
+            target = null;
+
             Idle = new Idle(this);
             Loiter = new Loiter(this);
             Discovery = new Discovery(this);
+
+            Wait = new Wait(this);
+
             Death = new Death(this);
 
             ChangeState(Idle);
@@ -115,22 +121,22 @@ namespace Enemy
         }
 
         /// <summary>
+        /// 発見したステートに切り替える(二重で発見しないように)
+        /// </summary>
+        public void BattleBegins()
+        {
+            if(State == Discovery || _battle) return;
+
+            ChangeState(Discovery);
+        }
+
+        /// <summary>
         /// 行動速度取得
         /// </summary>
         /// <returns>動けない ? 0 : timeScale </returns>
         public float ElapsedTime() => _stop ? 0 : Time.deltaTime;
 
-        public void BattleChanger(bool battle)
-        {
-            if (battle)
-            {
-                _battle = true;
-            }
-            else
-            {
-                _battle = false;
-            }
-        }
+        public void BattleChanger(bool battle) => _battle = battle;
 
         /// <summary>
         /// 敵(Player)を探す
@@ -141,7 +147,7 @@ namespace Enemy
             //戦闘範囲内にいるか判定
             if (!Area.Within) return false;
             //差を取得
-            var diff = Area.PlayerPos.position - eyeTrans.position;
+            var diff = Area.playerTarget.transform.position - eyeTrans.position;
             if (diff.magnitude <= scouting)
             {
                 //自身から敵へのベクトル、角度を調べる
@@ -150,7 +156,9 @@ namespace Enemy
                 //範囲内なら
                 if (eAngle < angle * 0.5f)
                 {
-                    ChangeState(Discovery);
+                    target = Area.playerTarget;
+
+                    battleArea.BattleStart();
                     return true;
                 }
             }
@@ -193,7 +201,7 @@ namespace Enemy
             try
             {
                 _stop = true;
-                Action.MyAnimator.speed = 0;
+                Action.MyAnimator.speed = 0.2f;
 
                 await UniTask.Delay(TimeSpan.FromSeconds(stopTime), cancellationToken: token);
 

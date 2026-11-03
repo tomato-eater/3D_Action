@@ -14,7 +14,7 @@ namespace Enemy
 
         public override void Start()
         {
-            Debug.Log("ƒAƒCƒhƒ‹");
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", 0);
             timer = 0;
             time = Random.Range(_controller.IdleTime.x, _controller.IdleTime.y);
         }
