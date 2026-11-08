@@ -14,9 +14,9 @@ namespace Enemy
         public override void Start()
         {
             //移動速度変更
-            _controller.Agent.speed = _controller.WalkSpeed;
+            _controller.Agent.speed = _controller.Action.EnemyData.MoveSpeed;
             //移動先の座標を指定
-            var moveVector = Random.insideUnitCircle * Random.Range(0, _controller.Area.Radius * _controller.WalkArea);
+            var moveVector = Random.insideUnitCircle * Random.Range(0.1f, _controller.Area.Radius * _controller.WalkArea);
             var targetPos = _controller.Area.AreaPos + new Vector3(moveVector.x, 0, moveVector.y);
             //移動開始
             _controller.Agent.SetDestination(targetPos);

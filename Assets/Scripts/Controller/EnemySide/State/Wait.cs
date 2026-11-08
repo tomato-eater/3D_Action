@@ -16,17 +16,22 @@ namespace Enemy
 
         public override void Start()
         {
+            _controller.Agent.isStopped = false;
+
             //うろつく時間
-            _waitTime = Random.Range(2.0f, 3.05f);
             _nowTime = 0;
+            var waitTime = _controller.Action.EnemyData.WaitTime;
+            _waitTime = Random.Range(waitTime.x, waitTime.y);
 
             //移動先
-            var moveVector = Random.insideUnitCircle.normalized * Random.Range(1.5f, 2.5f);
+            var moveRange = _controller.Action.EnemyData.MoveRange;
+            var moveVector = Random.insideUnitCircle.normalized * Random.Range(moveRange.x, moveRange.y);
             var targetPos = _controller.MyTransform.position + new Vector3(moveVector.x, 0, moveVector.y);
             _controller.Agent.SetDestination(targetPos);
 
             //速度
-            _controller.Agent.speed = _controller.WalkSpeed * 0.1f;
+            _controller.Agent.speed = _controller.Action.EnemyData.MoveSpeed * _controller.Action.EnemyData.MoveMag;
+            _controller.Agent.acceleration = 8;//初期値(8)に
         }
 
         public override void Update()
@@ -42,14 +47,16 @@ namespace Enemy
                 }
                 else
                 {
-                    //_controller.ChangeState()
+                    _controller.ChangeState(_controller.Execution);
                 }
             }
 
+            _repetition = true;
+
             //向きの制御
-            if (_controller.target == null) return;
+            if (_controller.target.point == null) return;
             var myTrans = _controller.MyTransform;
-            var targetPos = _controller.target.transform.position;
+            var targetPos = _controller.target.point.transform.position;
 
             var lookDirection = Vector3.Scale( targetPos - myTrans.position, new Vector3(1, 0, 1)).normalized;
 
@@ -65,7 +72,7 @@ namespace Enemy
             //現在の向きから移動方向を求める
             var localVelocity = _controller.transform.InverseTransformDirection(moveSpeed).normalized;
 
-            _controller.Action.MyAnimator.SetFloat("MoveVelocity", moveSpeed.magnitude * 10);
+            _controller.Action.MyAnimator.SetFloat("MoveVelocity", moveSpeed.magnitude / _controller.Action.EnemyData.MoveMag);
             _controller.Action.MyAnimator.SetFloat("MoveVectorX", localVelocity.x);
             _controller.Action.MyAnimator.SetFloat("MoveVectorY", localVelocity.z);
 
@@ -74,6 +81,8 @@ namespace Enemy
 
         public override void End()
         {
+            _controller.Agent.updateRotation = true;
+            _controller.Agent.isStopped = false;
             _repetition = false;
         }
     }

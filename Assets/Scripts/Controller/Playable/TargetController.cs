@@ -67,6 +67,8 @@ namespace Playable.Player
                 //“G‚Ìæ“¾
                 if (GetShortestCollider(out var collider))
                 {
+                    if (collider == null) return;
+
                     //Å’Z‚É‚¢‚é“G‚ğæ“¾
                     if (collider.transform.TryGetComponent<Enemy.EnemyController>(out var controller))
                     {

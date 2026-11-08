@@ -55,11 +55,11 @@ namespace Playable.Player
                 var adjustment = Vector3.Scale(enemyPos - myPos, new Vector3(1, 0, 1)).normalized;
 
                 //調査する座標を調整
-                myPos += adjustment * _controller.Controller.radius;
-                enemyPos -= adjustment * _controller.target.Radius;
+                var my = myPos + adjustment * _controller.Controller.radius;
+                var enemy = enemyPos - adjustment * _controller.target.Radius;
 
                 //十分に近いか
-                bool dis = Vector3.Distance(myPos, enemyPos) <= _controller.Action.Mode.AttackDistance;
+                bool dis = Vector3.Distance(my, enemy) <= _controller.Action.Mode.AttackDistance;
 
                 //移動・回転方向計算
                 var moveVector = (enemyPos - myPos).normalized * _controller.CharData.ApproachSpeed;

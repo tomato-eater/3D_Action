@@ -10,13 +10,13 @@ namespace Playable.Alpha
     {
         public override int MaxCombo => 3;
 
-        public override float AttackDistance => 0.75f;
+        public override float AttackDistance => 1.25f;
 
         public override float MaxHoldTime => 0;
 
         public override bool ChargeMove => false;
 
-        [SerializeField] GameObject SlashObject;
+        [SerializeField] private GameObject SlashObject;
         private List<GameObject> _slashObjects = new ();
 
 

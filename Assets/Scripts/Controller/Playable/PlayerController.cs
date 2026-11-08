@@ -63,7 +63,7 @@ namespace Playable.Player
         /// <summary>
         /// 移動量
         /// </summary>
-        public Vector3 MoveVector;
+        public Vector3 MoveVector = Vector3.zero;
 
         /// <summary> キャラクターの共通のパラメーター </summary>
         public PlayableData CharData => charData;

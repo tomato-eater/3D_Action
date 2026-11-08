@@ -931,16 +931,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
   eyeTrans: {fileID: 134183084}
-  idleTime: {x: 3, y: 5}
   walkArea: 0.75
-  walkSpeed: 5
   scouting: 7.5
   angle: 100
   battleArea: {fileID: 1998940486}
   points:
   - {fileID: 1536483702}
-  status: {fileID: 1847924265}
-  target: {fileID: 0}
   agent: {fileID: 860116752}
   _action: {fileID: 1847924266}
 --- !u!195 &860116752
@@ -1328,9 +1324,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7515587546222981938, guid: d4c0d7159c5a44b4c9e0b1bb6c221fe1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1847924265}
     - targetCorrespondingSourceObject: {fileID: 7515587546222981938, guid: d4c0d7159c5a44b4c9e0b1bb6c221fe1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1847924264}
@@ -2257,19 +2250,6 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &1847924265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847924262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9ffbb7d0df5e8746ab732b24738abb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestEnemyStatus
-  status: {fileID: 11400000, guid: 2e1b44492c7ec024bb52e5296091a487, type: 2}
 --- !u!114 &1847924266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2282,6 +2262,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930a7ee8f9bcb34419902569e96e39ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy.First.ActionController
+  _enemyData: {fileID: 11400000, guid: 85da060b5df576240a7debe5b414fd08, type: 2}
+  _attackPoint: {fileID: 1536483701}
   _animator: {fileID: 887247049}
 --- !u!1 &1917394753
 GameObject:

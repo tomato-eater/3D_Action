@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 移動などキャラクターごとでもっ変わらないデータ
+/// 移動などキャラクターごとでも変わらないデータ
 /// </summary>
 [CreateAssetMenu(fileName = "PlayableData", menuName = "Data/PlayableData")]
 public class PlayableData : ScriptableObject

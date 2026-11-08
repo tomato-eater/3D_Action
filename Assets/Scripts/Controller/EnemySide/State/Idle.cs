@@ -16,7 +16,9 @@ namespace Enemy
         {
             _controller.Action.MyAnimator.SetFloat("MoveVelocity", 0);
             timer = 0;
-            time = Random.Range(_controller.IdleTime.x, _controller.IdleTime.y);
+            //‘Ò‹@‚·‚éŽžŠÔ‚ðŒˆ‚ß‚é
+            var idolTime = _controller.Action.EnemyData.IdleTime;
+            time = Random.Range(idolTime.x, idolTime.y);
         }
 
         public override void Update()

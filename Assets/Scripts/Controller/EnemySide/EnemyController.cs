@@ -22,17 +22,19 @@ namespace Enemy
     {
         [Header("Parameter")]
         [SerializeField] Transform eyeTrans;
-        [SerializeField, Tooltip("その場にとどまる時間")] Vector2 idleTime;
-        [SerializeField, Tooltip("徘徊範囲倍率"), Range(0.01f, 1.0f)] float walkArea;
-        [SerializeField, Tooltip("歩く速度")] float walkSpeed;
+        [SerializeField, Tooltip("徘徊範囲倍率"), Range(0.01f, 1.0f)] float walkArea = 0.75f;
         [SerializeField, Tooltip("見える距離")] float scouting;
         [SerializeField, Tooltip("索敵視野")] float angle;
 
         [Header("Refer")]
         [SerializeField, Tooltip("バトルエリア")] BattleArea battleArea;
         [Tooltip("各部位")] public TargetPoint[] points;
-        [SerializeField, Tooltip("ステータス")] StatusBase status;
-        public TargetPoint target;
+
+        /// <summary>
+        /// 標的の情報を見る
+        /// playerSide ? Player側 : Enemy側   point　場所
+        /// </summary>
+        public (bool playerSide, TargetPoint point) target;   
 
         [Header("Component")]
         [SerializeField] NavMeshAgent agent;
@@ -59,9 +61,10 @@ namespace Enemy
         /// 待機(隙)
         /// </summary>
         public Wait Wait { get; private set; }
-
-
-
+        /// <summary>
+        /// 行動の選択・実行
+        /// </summary>
+        public Execution Execution {  get; private set; }
 
         /// <summary> 死亡 </summary>
         public Death Death { get; private set; }
@@ -70,12 +73,13 @@ namespace Enemy
         public Transform MyTransform { get; private set; }
         public BattleArea Area => battleArea;
         public NavMeshAgent Agent => agent;
-        public Vector2 IdleTime => idleTime;
+        /// <summary>
+        /// 戦闘エリア基準で徘徊する距離の最大倍率
+        /// </summary>
         public float WalkArea => walkArea;
-        public float WalkSpeed => walkSpeed;
 
         /// <summary>
-        /// キャラクター固有のアクション
+        /// キャラクター固有の
         /// </summary>
         public ActionControllerBase Action => _action;
 
@@ -84,21 +88,25 @@ namespace Enemy
         /// </summary>
         private bool _battle = false;
 
+        private void OnValidate()
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
             MyTransform = transform;
             if (!battleArea) MyTransform.parent.TryGetComponent<BattleArea>(out battleArea);
-            if (!agent) MyTransform.TryGetComponent<NavMeshAgent>(out agent);
 
-            target = null;
+            target = (false, null);
 
             Idle = new Idle(this);
             Loiter = new Loiter(this);
             Discovery = new Discovery(this);
 
             Wait = new Wait(this);
+            Execution = new Execution(this);
 
             Death = new Death(this);
 
@@ -156,7 +164,7 @@ namespace Enemy
                 //範囲内なら
                 if (eAngle < angle * 0.5f)
                 {
-                    target = Area.playerTarget;
+                    target = (true, Area.playerTarget);
 
                     battleArea.BattleStart();
                     return true;
