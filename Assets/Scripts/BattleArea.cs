@@ -52,6 +52,10 @@ public class BattleArea : MonoBehaviour
             {
                 IsBattle = false;
                 SGameManager.instance.StartExploreMode();
+                foreach (var enemy in enemyControllers)
+                {
+                    enemy.BattleChanger(false);
+                }
             }
         }
     }

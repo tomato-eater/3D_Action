@@ -17,7 +17,9 @@ namespace Enemy
             //戦闘から逃げられたら
             if (!_controller.Area.IsBattle)
             {
+                _controller.Action.MyAnimator.Play("Move");
                 _controller.ChangeState(_controller.Idle);
+                return;
             }
 
             //行動中

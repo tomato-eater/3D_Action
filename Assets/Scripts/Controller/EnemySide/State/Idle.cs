@@ -14,7 +14,11 @@ namespace Enemy
 
         public override void Start()
         {
+            _controller.Agent.isStopped = true;
+
             _controller.Action.MyAnimator.SetFloat("MoveVelocity", 0);
+            _controller.Action.MyAnimator.SetTrigger("EndAttack");
+
             timer = 0;
             //‘Ò‹@‚·‚éŽžŠÔ‚ðŒˆ‚ß‚é
             var idolTime = _controller.Action.EnemyData.IdleTime;

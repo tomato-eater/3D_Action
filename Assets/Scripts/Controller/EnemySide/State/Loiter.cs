@@ -13,6 +13,10 @@ namespace Enemy
 
         public override void Start()
         {
+            //移動可能・移動方向を向くように
+            _controller.Agent.isStopped = false;
+            _controller.Agent.updateRotation = true;
+
             //移動速度変更
             _controller.Agent.speed = _controller.Action.EnemyData.MoveSpeed;
             //移動先の座標を指定
