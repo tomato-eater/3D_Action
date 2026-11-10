@@ -15,6 +15,17 @@ namespace Interface
     }
 
     /// <summary>
+    /// HitStop時(HitSlowだけどね)のアニメーションの倍率と時間のインターフェース
+    /// </summary>
+    public interface IHitAni
+    {
+        /// <summary>
+        /// HitStop時のアニメーションの倍率と時間
+        /// </summaryHitStop時のアニメーションの倍率と時間</returns>
+        (float speed, float time) HitAniMagTime();
+    }
+
+    /// <summary>
     /// ダメージを受けるためのインターフェース
     /// </summary>
     public interface IDamage
@@ -23,9 +34,10 @@ namespace Interface
         /// ダメージを受けるための関数
         /// </summary>
         /// <param name="damage">与えるダメージ</param>
+        /// <param name="animeMag">アニメーションの再生速度</param>
         /// <param name="stopTime">ヒットストップの時間</param>
         /// <param name="force">力の方向</param>
-        void Damage(float damage, float stopTime, Vector3 force);
+        void Damage(float damage, float animeMag, float stopTime, Vector3 force);
 
         /// <summary>
         /// ダメージ + 吹き飛ばすための関数

@@ -11,6 +11,7 @@ namespace Enemy
     {
         [Header("Parameter")]
         [SerializeField] EnemyData _enemyData;
+        [SerializeField] protected LayerMask _hitMask;
 
         [Header("Refer")]
         [SerializeField] private Transform _attackPoint;

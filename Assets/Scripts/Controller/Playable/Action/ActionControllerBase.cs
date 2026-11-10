@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Playable
@@ -23,7 +24,14 @@ namespace Playable
         [Header("Component")]
         [SerializeField] Animator _animator;
 
+        /// <summary>
+        /// プレイヤー以外スロー ? timeScaleの影響を受けない : timeScaleの影響を受ける
+        /// </summary>
         public Interface.IElapsedTime ElapsedTime {  get; private set; }
+        /// <summary>
+        /// ヒットストップの速度倍率、時間取得
+        /// </summary>
+        public Interface.IHitAni HitStopMT { get; private set; }
 
         protected bool _endUnique;
 
@@ -79,9 +87,10 @@ namespace Playable
 
 
 
-        public void Set(Interface.IElapsedTime elapsedTime)
+        public void Set(Interface.IElapsedTime elapsedTime, Interface.IHitAni hitAni)
         {
             ElapsedTime = elapsedTime;
+            HitStopMT = hitAni;
 
             foreach (var action in _actions)
                 action.Set(_animator);
@@ -150,13 +159,12 @@ namespace Playable
         /// <summary>
         /// ヒットストップ開始
         /// </summary>
-        /// <param name="stopTime"></param>
-        public void StartHitStop(float stopTime)
+        public void StartHitStop()
         {
             if (_hitStopToken != null) StopHitStop();
 
             _hitStopToken = new ();
-            HitStop(stopTime, _hitStopToken.Token).Forget();
+            HitStop().Forget();
         }
         /// <summary>
         /// ヒットストップ中止
@@ -170,20 +178,18 @@ namespace Playable
         /// <summary>
         /// ヒットストップでアニメーションの速度を0に
         /// </summary>
-        /// <param name="stopTime">止める時間</param>
-        /// <param name="token">キャンセルトークン</param>
         /// <returns>void</returns>
-        async UniTaskVoid HitStop(float stopTime, CancellationToken token)
+        async UniTask HitStop()
         {
             float elapsedTime = 0;
             try
             {
-                MyAnimator.speed = 0.2f;
+                MyAnimator.speed = HitStopMT.HitAniMagTime().speed;
 
-                while (elapsedTime < stopTime)
+                while (elapsedTime < HitStopMT.HitAniMagTime().time)
                 {
                     elapsedTime += ElapsedTime.ElapsedTime();
-                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                    await UniTask.Yield(PlayerLoopTiming.Update, _hitStopToken.Token);
                 }
 
                 _hitStopToken?.Dispose();

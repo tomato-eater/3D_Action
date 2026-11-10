@@ -15,7 +15,7 @@ namespace Playable.Player
     /// プレイヤー操作
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : BehaviorControllerBase<PlayerController, State>, IElapsedTime, IDamage
+    public class PlayerController : BehaviorControllerBase<PlayerController, State>, IElapsedTime, IDamage, IHitAni
     {
         [Header("Parameter")]
         [SerializeField] PlayableData charData;
@@ -100,7 +100,7 @@ namespace Playable.Player
             Avoid = new Avoid(this);
 
             Action.EquipWeapon();
-            Action.Set(this);
+            Action.Set(this, this);
 
             ChangeState(Idle);
         }
@@ -151,6 +151,11 @@ namespace Playable.Player
         /// </summary>
         /// <returns>プレイヤー以外スロー ? timeScaleの影響を受けない : timeScaleの影響を受ける </returns>
         public float ElapsedTime() => slowTimer > 0 ? Time.unscaledDeltaTime : Time.deltaTime;
+        /// <summary>
+        /// ヒットストップの速度倍率、時間取得
+        /// </summary>
+        /// <returns>ヒットストップの速度倍率、時間</returns>
+        public (float speed, float time) HitAniMagTime() => (charData.SpeedMag, charData.StopTime);
 
         /// <summary>
         /// 着地判定
@@ -244,8 +249,9 @@ namespace Playable.Player
 
 
 
-        public void Damage(float damage, float stopTime, Vector3 force)
+        public void Damage(float damage, float speed, float time, Vector3 force)
         {
+            Debug.Log(Avoid.JudgeJustAvoid);
             //ジャスト回避か?
             if (Avoid.JudgeJustAvoid <= CharData.JudgeAvoidPercent)
             {
@@ -254,7 +260,7 @@ namespace Playable.Player
             }
 
             //ダメージを無効化する技中か?
-            if(State == Unique || Action.Hit())
+            if(State == Unique && Action.Hit())
             {
                 return;
             }
@@ -276,5 +282,6 @@ namespace Playable.Player
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(transform.position, Controller.radius * 0.5f);
         }
+
     }
 }

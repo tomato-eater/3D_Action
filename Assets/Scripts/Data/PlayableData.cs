@@ -37,6 +37,10 @@ public class PlayableData : ScriptableObject
     [Header("JustDefense")]
     [SerializeField, Tooltip("ジャスト防御判定の時間")] float judgeDefenseTime;
 
+    [Header("HitStop")]
+    [SerializeField] float _speedMag;
+    [SerializeField] float _stopTime;
+
     /// <summary> 歩く速度 </summary>
     public float WalkSpeed => walkSpeed;
 
@@ -87,4 +91,13 @@ public class PlayableData : ScriptableObject
 
     /// <summary> ジャスト防御判定の時間 </summary>
     public float JudgeDefenseTime => judgeDefenseTime;
+
+    /// <summary>
+    /// アニメーションの速度の倍率
+    /// </summary>
+    public float SpeedMag => _speedMag;
+    /// <summary>
+    /// アニメーションの速度を変える時間
+    /// </summary>
+    public float StopTime => _stopTime;
 }

@@ -47,12 +47,11 @@ namespace Playable.Player
             }
             else
             {
-                targetPos = -_controller.MyTransform.forward * _controller.CharData.AvoidDistance; ;
+                targetPos = -_controller.MyTransform.forward * _controller.CharData.AvoidDistance;
             }
             targetPos = startPos + targetPos;
 
-            Debug.Log("‚©‚¢‚Ð");
-
+            _controller.Controller.radius *= 2f;
         }
 
         public override void Update()
@@ -75,6 +74,7 @@ namespace Playable.Player
             //ˆÚ“®‚µ‚«‚Á‚½‚ç–ß‚·
             if (timer >= _controller.CharData.AvoidTime)
             {
+                _controller.Controller.radius /= 1.5f;
                 _controller.ChangeState(_controller.Idle);
                 return;
             }
@@ -83,10 +83,10 @@ namespace Playable.Player
             var moveSpeed = new Vector3(_controller.Controller.velocity.x, 0, _controller.Controller.velocity.z).magnitude;
             if (moveSpeed == 0)
             {
+                _controller.Controller.radius /= 2f;
                 _controller.ChangeState(_controller.Idle);
                 return;
             }
-            ;
         }
 
         public override void End()

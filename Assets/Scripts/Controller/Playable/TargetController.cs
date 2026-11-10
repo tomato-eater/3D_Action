@@ -13,7 +13,7 @@ namespace Playable.Player
         [SerializeField] LayerMask mask;
 
         [Header("Component")]
-        [SerializeField] PlayerController player;
+        PlayerController _player;
 
         BattleArea battleArea;
         int individual;
@@ -22,11 +22,11 @@ namespace Playable.Player
         /// <summary>
         /// 索敵時にヒットしたコライダー
         /// </summary>
-        Collider[] _hit = new Collider[10]; 
+        Collider[] _hit = new Collider[10];
 
-        private void Start()
+        private void OnValidate()
         {
-            TryGetComponent<PlayerController>(out player);
+            _player = GetComponent<PlayerController>();
         }
 
         void Update()
@@ -34,11 +34,11 @@ namespace Playable.Player
             //ターゲットロックオン・オフ
             LockEnemy();
             //ターゲット変更
-            if (player.target)
+            if (_player.target)
             {
-                if (Vector3.Distance(transform.position, player.target.transform.position) > scoutingRadius)
+                if (Vector3.Distance(transform.position, _player.target.transform.position) > scoutingRadius)
                 {
-                    player.target = null;
+                    _player.target = null;
                     battleArea = null;
                     return;
                 }
@@ -57,9 +57,9 @@ namespace Playable.Player
             if (SInputSystem.Instance.TargetTrigger)
             {
                 //既にターゲットがいる
-                if (player.target != null)
+                if (_player.target != null)
                 {
-                    player.target = null;
+                    _player.target = null;
                     battleArea = null;
                     return;
                 }
@@ -74,7 +74,7 @@ namespace Playable.Player
                     {
                         //ロックオン
                         part = 0;
-                        player.target = controller.points[part];
+                        _player.target = controller.points[part];
                         //グループを取得
                         if (collider.transform.parent.TryGetComponent<BattleArea>(out battleArea))
                         {
@@ -102,19 +102,19 @@ namespace Playable.Player
             float minDir = float.MaxValue;
 
             //範囲内で索敵
-            Physics.OverlapSphereNonAlloc(player.MyTransform.position, scoutingRadius, _hit, mask);
+            Physics.OverlapSphereNonAlloc(_player.MyTransform.position, scoutingRadius, _hit, mask);
             //該当した敵を洗い出す
             foreach (var enemy in _hit)
             {
                 if (enemy == null) continue;
                 //自身から敵へのベクトル、角度を調べる
-                var dir = (enemy.transform.position - player.MyTransform.position).normalized;
-                var eAngle = Vector3.Angle(player.CameraForward(), dir);
+                var dir = (enemy.transform.position - _player.MyTransform.position).normalized;
+                var eAngle = Vector3.Angle(_player.CameraForward(), dir);
                 //範囲内なら
                 if (eAngle < angle * 0.5f)
                 {
                     //距離を計算　最短を選択
-                    var toDir = (enemy.transform.position - player.MyTransform.position).sqrMagnitude;
+                    var toDir = (enemy.transform.position - _player.MyTransform.position).sqrMagnitude;
                     if (toDir < minDir)
                     {
                         minDir = toDir;
@@ -184,7 +184,7 @@ namespace Playable.Player
         /// </summary>
         private void ChangeLock()
         {
-            player.target = battleArea.enemyControllers[individual].points[part];
+            _player.target = battleArea.enemyControllers[individual].points[part];
         }
 
 
@@ -196,8 +196,8 @@ namespace Playable.Player
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, scoutingRadius);
 
-            Vector3 leftBoundary = Quaternion.Euler(0, -angle * 0.5f, 0) * player.CameraForward();
-            Vector3 rightBoundary = Quaternion.Euler(0, angle * 0.5f, 0) * player.CameraForward();
+            Vector3 leftBoundary = Quaternion.Euler(0, -angle * 0.5f, 0) * _player.CameraForward();
+            Vector3 rightBoundary = Quaternion.Euler(0, angle * 0.5f, 0) * _player.CameraForward();
 
             Gizmos.DrawLine(transform.position, transform.position + leftBoundary * angle);
             Gizmos.DrawLine(transform.position, transform.position + rightBoundary * angle);

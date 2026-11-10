@@ -25,7 +25,9 @@ MonoBehaviour:
   maxMoveDistance: 13
   avoidDistance: 2.5
   avoidTime: 0.25
-  judgeAvoidPercent: 0.35
+  judgeAvoidPercent: 0.7
   slowScale: 0.1
-  slowTime: 1.25
+  slowTime: 2
   judgeDefenseTime: 0.25
+  _speedMag: 0.2
+  _stopTime: 0.1

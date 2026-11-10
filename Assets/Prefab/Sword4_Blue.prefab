@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 647826099306531886}
   m_Layer: 0
-  m_Name: Tip
+  m_Name: Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6944081739933358427}
   m_Layer: 0
-  m_Name: Base
+  m_Name: In
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,6 +169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   _hitLayer:
     serializedVersion: 2
-    m_Bits: 2176
+    m_Bits: 2688
   _markOutside: {fileID: 647826099306531886}
   _markInside: {fileID: 6944081739933358427}

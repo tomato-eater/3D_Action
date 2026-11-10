@@ -174,14 +174,12 @@ namespace Enemy
         }
 
 
-        public void Damage(float damage, float stopTime, Vector3 force)
+        public void Damage(float damage, float speed, float time, Vector3 force)
         {
-            Debug.Log("喰らった" + damage + " " + stopTime + " " + force);
-
-
             if (_hitStopToken != null) StopHitStop();
+
             _hitStopToken = new();
-            HitStop(stopTime, _hitStopToken.Token).Forget();
+            HitStop(speed, time).Forget();
             Debug.Log("とおった");
         }
 
@@ -204,14 +202,14 @@ namespace Enemy
         /// <param name="stopTime">止める時間</param>
         /// <param name="token">キャンセルトークン</param>
         /// <returns>void</returns>
-        async UniTaskVoid HitStop(float stopTime, CancellationToken token)
+        async UniTaskVoid HitStop(float animeSpeed, float stopTime)
         {
             try
             {
                 _stop = true;
-                Action.MyAnimator.speed = 0.2f;
+                Action.MyAnimator.speed = animeSpeed;
 
-                await UniTask.Delay(TimeSpan.FromSeconds(stopTime), cancellationToken: token);
+                await UniTask.Delay(TimeSpan.FromSeconds(stopTime), cancellationToken: _hitStopToken.Token);
 
                 _hitStopToken?.Dispose();
                 _hitStopToken = null;

@@ -87,7 +87,8 @@ namespace Playable
                 _colls.Add(collider);
                 if (collider.TryGetComponent<Interface.IDamage>(out var target))
                 {
-                    target.Damage(50, 0.1f, Vector3.zero);
+                    var st = _controller.HitStopMT.HitAniMagTime();
+                    target.Damage(50, st.speed, st.time, _controller.transform.position);
                     Debug.Log("ヒットストップの時間を直接指定している");
                 }
             }
@@ -95,7 +96,7 @@ namespace Playable
             //攻撃が当たっていればPlayHitStop
             if (hitStop)
             {
-                _controller.StartHitStop(0.1f);
+                _controller.StartHitStop();
                 Debug.Log("ヒットストップの時間を直接指定している");
 
             }

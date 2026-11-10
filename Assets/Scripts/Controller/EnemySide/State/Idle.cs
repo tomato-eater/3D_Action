@@ -17,7 +17,6 @@ namespace Enemy
             _controller.Agent.isStopped = true;
 
             _controller.Action.MyAnimator.SetFloat("MoveVelocity", 0);
-            _controller.Action.MyAnimator.SetTrigger("EndAttack");
 
             timer = 0;
             //‘Ò‹@‚·‚éŽžŠÔ‚ðŒˆ‚ß‚é
